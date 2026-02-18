@@ -5,6 +5,8 @@ info:
 servers:
   - url: https://mxp-public-iego-api.dev.icadsistemi.com
     description: Development environment
+  - url: https://mxp-public-iego-api.prod.icadsistemi.com
+    description: Production environment
 paths:
   /v1/users/{id}:
     get:
@@ -3498,228 +3500,50 @@ components:
       title: fuel_station_output
       type: object
       properties:
-        unattended_manual_insert:
-          type: boolean
-          description:
-            True if after failing an attempt to retrieve data from the computer
-            station, the user can proceed manually for an unattended transaction
-        country:
-          type: string
-          description: Company country name
-        disable_self_discount:
-          type: boolean
-          description:
-            True if the self service customer discount is disabled, false
-            otherwise
-        code:
-          type: string
-          description: Code assigned to the fuel station by the supplier
-        notes:
-          type: string
-          description: Optional notes
-        flag:
-          type: string
-          description: Reference to the fuel station banner.
-        city:
-          maxLength: 30
-          type: string
-          description: Company headquarter city
-        attended_is_receipt_number_mandatory:
-          type: boolean
-          description: True if the receipt number is mandatory for attended transactions
-        vat_number:
-          maxLength: 20
-          type: string
-          description: Company vat number
-        latitude:
-          type: number
-          description: Latitude of the fuel station
-        adm_code:
-          maxLength: 7
-          minLength: 6
-          type: string
-          description: Company sdi passive code
-        attended_is_photo_mandatory:
-          type: boolean
-          description: True if the receipt photo is mandatory for attended transactions
-        unattended_is_receipt_number_mandatory:
-          type: boolean
-          description: True if the receipt number is mandatory for unattended transactions
-        house_number:
-          type: string
-          description: Company house number
-        unattended_auto_retrieve_invoice_data:
-          type: boolean
-          description:
-            True if this fuel station can retrieve data from the computer
-            station for unattended transactions
-        fiscal_code:
-          maxLength: 20
-          type: string
-          description: Company fiscal code
-        unattended_is_photo_mandatory:
-          type: integer
-          description:
-            "This fields determines if the photo for unattened photos is
-            mandatory. <br/>The possible values are:<ul><li>0: the photo is
-            never mandatory</li><li>1: the photo is mandatory only for manual
-            inserts</li><li>2: the photo is always mandatory</li></ul>"
-        zip_code:
-          maxLength: 6
-          minLength: 4
-          type: integer
-          description: Company headquarter zip code
-        pec:
-          maxLength: 100
-          type: string
-          description: Company pec
-          format: email
-        unattended_default_status_id:
-          type: integer
-          description:
-            Link to the default invoice status ('1' stands for 'approved' and
-            '2' for 'to be approved') for unattended transactions
-        hasComputerStationConnection:
-          type: boolean
-          description:
-            True if the fuel station can communicate with the computer station.
-            False otherwise.
-        automation:
-          type: string
-          description: Identifies fuel station automation
-        attended_manual_insert:
-          type: boolean
-          description:
-            True if after failing an attempt to retrieve data from the computer
-            station, the customer can proceed manually for an attended
-            transaction
-        province:
-          maxLength: 2
-          type: string
-          description: Province code
-        manager_id:
-          type: integer
-          description: Id of the fuel station manager
         id:
           type: integer
-          description: Unique fuel station identifier
-        email:
-          maxLength: 100
-          type: string
-          description: Company email
-          format: email
-        longitude:
-          type: number
-          description: Longitude of the fuel station
-        store_id:
-          type: string
-          description: Store id of the fuel station
-        address:
-          maxLength: 81
-          type: string
-          description: Company address
-        fax_number:
-          maxLength: 50
-          type: string
-          description: Company fax number
-        attended_auto_retrieve_invoice_data:
+          format: int64
+        unattended_manual_insert:
           type: boolean
-          description:
-            True if this fuel station can retrieve data from the computer
-            station for attended transactions
-        internal_properties:
-          type: object
-          properties:
-            is_master:
-              type: boolean
-              description:
-                True if this fuel station (in multisupplier configuration) is the
-                master, false otherwise
-            total_sms:
-              type: integer
-              description: Total sms
-            invoice_header_id:
-              type: integer
-              description: Link with the invoice header data to be used
-            has_non_oil:
-              type: boolean
-              description:
-                True if this fuel station has the non oil Selfnet invoicing, false
-                otherwise
-            has_invoice:
-              type: boolean
-              description:
-                True if this fuel station issues invoices without supplier header
-                data, false otherwise (the header is read from the supplier)
-            has_pos_recharge:
-              type: boolean
-              description: True if the pos can perform recharging operations, false otherwise
-            protocol_id:
-              type: integer
-              description: Link to the protocol to be used in the invoices
-            total_email:
-              type: integer
-              description: Total emails
-            range_sms:
-              type: boolean
-              description: Settings for sending sms
-            is_enabled:
-              type: boolean
-              description: True if the fuel station is active, false otherwise
-            dispensers_count:
-              type: integer
-              description: Total count of the dispenser active in the fuel station
-            has_non_oil_invoice_and_go:
-              type: boolean
-              description:
-                True if this fuel station has the non oil Invoice&GO invoicing,
-                false otherwise
-            is_code:
-              type: string
-              description: ICAD Sistemi fuel station code
-            range_email:
-              type: boolean
-              description: Settings for sending emails
-            has_igo_invoice:
-              type: boolean
-              description: True if this fuel station has Invoice&GO invoicing, false otherwise
-            has_manual_ddt:
-              type: boolean
-              description: True if the fuel station has manual ddt, false otherwise
-            duplicate_master:
-              type: boolean
-              description:
-                True if in multisupplier, the system duplicates the transactions
-                from the master to the slave, false otherwise
-        enabled_articles:
-          type: array
-          description: Enabled articles ids, lookup for article details using
-            /articles/{id} endpoint
-          items:
-            type: integer
+        city:
+          type: string
+        attended_is_receipt_number_mandatory:
+          type: boolean
+        latitude:
+          type: number
+          format: float
+        attended_is_photo_mandatory:
+          type: boolean
+        unattended_is_receipt_number_mandatory:
+          type: boolean
+        name:
+          type: string
         attended_default_status_id:
           type: integer
-          description:
-            Link to the default invoice status ('1' stands for 'approved' and
-            '2' for 'to be approved') for attended transactions
-        name:
-          maxLength: 81
-          type: string
-          description: Company complete name
-        phone_number:
-          maxLength: 50
-          type: string
-          description: Company phone number
-        supplier_id:
+          format: int64
+        unattended_auto_retrieve_invoice_data:
+          type: boolean
+        unattended_is_photo_mandatory:
           type: integer
-          description: Store id of the fuel station
-        country_id:
+          format: int64
+        unattended_default_status_id:
           type: integer
-          description: Company country id
-      description:
-        Fields with prefix <i>unattended</i> only refers to FE1Touch app
-        and selfnet portal.<br>Fields with prefix <i>attended</i> only refers to
-        INVOICE&GO app.
+          format: int64
+        attended_manual_insert:
+          type: boolean
+        longitude:
+          type: number
+          format: float
+        address:
+          type: string
+        attended_auto_retrieve_invoice_data:
+          type: boolean
+        flag:
+          type: string
+        automation:
+          type: string
+        has_computer_station_connection:
+          type: boolean
     fuelStationOutputArray:
       title: fuel_station_output_array
       type: array
