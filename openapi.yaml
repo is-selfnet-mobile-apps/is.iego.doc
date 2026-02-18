@@ -399,6 +399,65 @@ paths:
           content: {}
       security:
         - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users/terms:
+    get:
+      tags:
+        - User
+      summary: Retrieve user terms of service
+      description: requests.
+      responses:
+        # "200":
+        # description: Users list, filterd with the received query parameters
+        # content:
+        #   application/json:
+        #     schema:
+        #       $ref: "#/components/schemas/userOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+    put:
+      tags:
+        - User
+      summary: Update user terms of service
+      description: requests.
+      responses:
+        # "200":
+        # description: Users list, filterd with the received query parameters
+        # content:
+        #   application/json:
+        #     schema:
+        #       $ref: "#/components/schemas/userOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
   /v1/customers:
     post:
       tags:
@@ -1011,39 +1070,6 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/fuelStationOutput"
-        "400":
-          description: 400 response
-          content: {}
-        "401":
-          description: 401 response
-          content: {}
-        "403":
-          description: 403 response
-          content: {}
-        "500":
-          description: 500 response
-          content: {}
-      security:
-        - devicadapimainstackusersAuthorizerEA9C3B95: []
-  /v1/fuelstations:
-    post:
-      tags:
-        - Fuel Station
-      summary: Create new fuel station
-      description:
-        <h4>Not available for customer users. Available only if the user is
-        a manager or has an higher level.</h4> Create new fuel station with
-        given data
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/fuelStationInput"
-        required: true
-      responses:
-        "201":
-          description: Created new fuel station
-          content: {}
         "400":
           description: 400 response
           content: {}
