@@ -1,0 +1,4742 @@
+openapi: 3.0.1
+info:
+  title: mxp-dev-icadsistemi-apigw
+  version: 2022-05-10T14:04:42Z
+servers:
+  - url: https://mxp-dev-apigw-public.icadsistemi.com
+paths:
+  /v1/users/{id}:
+    get:
+      tags:
+        - User
+      summary: Retrieve single user by id
+      description: "Retrieve an user identified by the given id<h3>Query string
+        parameters</h3>If <strong>articleId</strong> is set, the vehicles are
+        filtered for that article.<br/><i>Use case</i>: use as articleId the
+        value returned by the GET /supplies/search"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieved user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userOutput"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+    put:
+      tags:
+        - User
+      summary: Edit an user
+      description: Edit the user identified by the given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userInput"
+        required: true
+      responses:
+        "204":
+          description: User correctly updated
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+    delete:
+      tags:
+        - User
+      summary: Unsubscribe an user
+      description: Unsubscribe an user identified by the given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: User correctly unsubscribed
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "422":
+          description: 422 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users/{id}/vehicles:
+    get:
+      tags:
+        - Vehicle
+      summary: Retrieve vehicles list
+      description: Retrieve vehicles linked to the input user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieved vehicles list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/vehicleOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/versions/{application}:
+    get:
+      parameters:
+        - name: application
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+    post:
+      parameters:
+        - name: application
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: 200 response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Empty"
+  /v1/payments/modes:
+    get:
+      tags:
+        - Payment Mode
+      summary: Retrieve all payment modes
+      description: Retrieve all payment modes<h3>Query string
+        parameters</h3><ul><li><strong>service</strong> is an optional
+        parameter. If set, the value can be "iegocustomer", "iegomanager" and
+        "portalmanager".If the value is <i>iegocustomer</i>, the endpoint will
+        return the payment modes used for the Invoice&GO scopes.If the value is
+        <i>iegomanager</i>, the endpoint will return the payment modes used for
+        the Fe1Touch scopes.If the value is <i>portalmanager</i>, the endpoint
+        will return the payment modes used for the Selfnet Portal scopes.If not
+        set, the endpoint returns all the available payment
+        modes.</li></ul><br/>
+      responses:
+        "200":
+          description: Retrieve all payment modes
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/paymentModeOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/invoices/active/search:
+    get:
+      tags:
+        - Invoice
+      summary: Retrieve all invoices
+      description: Retrieve all available active invoices headers for the
+        user.<h3>Query string parameters</h3><h4>One between
+        <strong>supplierId</strong> and <strong>customerId</strong> must be
+        set.Invoice&GO app must always set the <strong>customerId</strong>
+        field, leaving empty the <strong>supplierId</strong>.</h4><br/>Status
+        values are:<ul><li><strong>SF01</strong> for invoices to be approved (if
+        supplierId is set)</li><li><strong>SF02</strong> for invoices ready to
+        be sent (if supplierId is set)</li><li><strong>processing</strong> for
+        invoices to be approved and ready to be sent (if customerId is
+        set)</li><li><strong>history</strong> for historical invoices to be
+        approved (both if supplierId or customerId is set)</li></ul>If the
+        <strong>status</strong> is set to <i>history</i> the parameters
+        <strong>start</strong> and <strong>end</strong> are mandatory.The
+        datetime range defined by <strong>start</strong> and
+        <strong>end</strong> is set using the Unix time format.
+      parameters:
+        - name: start
+          in: query
+          schema:
+            type: string
+        - name: supplierId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: end
+          in: query
+          schema:
+            type: string
+        - name: customerId
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieve all available active invoices headers for the user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/activeInvoiceHeaderOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users/enable:
+    post:
+      tags:
+        - User
+      summary: Enable user on db
+      description: Enable user on db
+      responses:
+        "202":
+          description: User successfully enabled
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/invoices/active/{id}/details:
+    get:
+      tags:
+        - Invoice
+      summary: Retrieve invoice details
+      description: Retrieve all available active invoices details for the given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieve all available active invoices details for the given id
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/invoiceBodyOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users/search:
+    get:
+      tags:
+        - User
+      summary: Retrieve users data
+      description:
+        Used to get an users array.<h3>INVOICE&GO</h3>For Invoice&GO usage,
+        this endpoint is used to get the sub users created by a master customer
+        user.<h3>SELFNET</h3>For Selfnet usage, this endpoint is used to get all
+        users (customers and managers) of one supplier.<h3>Query string
+        parameters</h3>The <strong>supplier_id</strong> contains the supplier of
+        which you are searching the users. It must be used only for Selfnet
+        requests.
+      responses:
+        "200":
+          description: Users list, filterd with the received query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/customers:
+    post:
+      tags:
+        - Customer
+      summary: Create new customer(s)
+      description:
+        Create one or more new customer(s) with given data.<br/>If the
+        <strong>supplier_id</strong> field is set, it is a Selfnet customer.
+        Otherwise, it is an Invoice&GO customer.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/customerInput"
+        required: true
+      responses:
+        "201":
+          description: Customer(s) successfully created
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/vehicles/{id}:
+    get:
+      tags:
+        - Vehicle
+      summary: Retrieve vehicle
+      description: Retrieve vehicle with given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieved vehicle
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/vehicleOutput"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+    put:
+      tags:
+        - Vehicle
+      summary: Edit a vehicle
+      description: Edit vehicle fields using the given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/vehicleInput"
+        required: true
+      responses:
+        "204":
+          description: Vehicle correctly updated
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+    delete:
+      tags:
+        - Vehicle
+      summary: Delete a vehicle
+      description: Delete a vehicle identified by the given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Vehicle correctly deleted
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "422":
+          description: 422 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/fuelstations/{id}/prices/applied:
+    get:
+      tags:
+        - Applied Prices
+      summary: Retrieve applied price
+      description:
+        "Retrieve applied price referring to the received fuel station by
+        id.<h3>Query string
+        parameters</h3><ul><li><strong>price_level_id</strong>: if set, articles
+        are filtered using this parameters.</li><li><strong>article_id</strong>:
+        if not set, all applied prices are returned. Otherwise, only the
+        requested article is returned.</li></ul>"
+      parameters:
+        - name: article_id
+          in: query
+          schema:
+            type: string
+        - name: price_level_id
+          in: query
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Prices correctly retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/appliedPriceOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/vehicles/{id}/qr:
+    get:
+      tags:
+        - Vehicle
+      summary: Return vehicle qr code value
+      description: Return the string used to draw the vehicle qr code
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieved qr value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/vehicleOutput"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/invoices/details/{detailid}:
+    get:
+      tags:
+        - Invoice
+      summary: Retrieve single invoice detail by id
+      description:
+        Retrieve the single invoice detail identified by invoice id and
+        invoice detail id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: detailid
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Detail retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/invoiceBodyOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/customers/qr/email:
+    post:
+      tags:
+        - Customer
+      summary: Send customer qr code
+      description: Sends a qr code with customer informations
+      responses:
+        "202":
+          description: QR code send request accepted
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/invoices/{id}/print:
+    get:
+      tags:
+        - Invoice
+      summary: Print an existing invoice or show an invoice preview
+      description: 'Print or show invoice preview identified by id. The preview
+        creates an xml file before it is sent to the SDI. The print gives the
+        xml file after it is sent to the SDI.<h3>Query string
+        parameters</h3><ul><li><strong>preview</strong>: if True, you request an
+        invoice preview.</li><li><strong>type</strong> if set to "active" the
+        systems refer to active invoices, if set to "passive" the system refers
+        to the passive ones.</li><li><strong>output</strong> if set to "stream"
+        the endpoint returns a base64 string, if set to "url" the endpoint
+        returns an url to get the file. At the moment, "stream" is the only
+        available value.</li></ul>'
+      parameters:
+        - name: type
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: output
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: preview
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: A base64 string representing the requested file
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/base64String"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/supplies/search:
+    get:
+      tags:
+        - Supply
+      summary: Get a supplies array
+      description:
+        'Used to get a supplies array.<br/> <h3>INVOICE&GO</h3><br/>For
+        Invoice&GO usage, this endpoint is used to get supplies data from
+        computers station. There are 2 use cases:<ol><li>Request from INVOICE&GO
+        with receipt number: <strong>fuel_station_id</strong> and
+        <strong>receipt_number</strong> must be set. This retrieves a single
+        supply. In remote cases, it can return more than one supply.<br/>If one
+        or more supplies are returned, the system found useful data.<br/>If the
+        http code is 204 (No content) the customer has to go on manually (or try
+        again the procedure).<br/>In all other cases, the customer cannot go
+        ahed. If in the error body there is the message <strong>"Not
+        found"</strong>, the receipt number is wrong or the supply does not
+        exist.If in the error there is the message <strong>"Time out"</strong>,
+        the computer station did not response to our request.If in the error
+        there is the message <strong>"Petrol card"</strong> means the supply was
+        present, but was made using a petrol card and cannot be invoiced from
+        the app.</li><li>Request from FE1TOUCH:
+        <strong>fuel_station_id</strong>, <strong>dispenser_number</strong> and
+        <strong>rows</strong> must be set. This returns a list of the last rows
+        supplies. </li></ol>'
+      parameters:
+        - name: dispenser_number
+          in: query
+          schema:
+            type: string
+        - name: fuel_station_id
+          in: query
+          schema:
+            type: string
+        - name: receipt_number
+          in: query
+          schema:
+            type: string
+        - name: service
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: rows
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Supplies successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/supplyOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/supplies/search/qr:
+    post:
+      tags:
+        - Supply
+      summary: Get a supplies array from QR code
+      description:
+        'Used to get a supplies array.<br/> <h3>INVOICE&GO</h3><br/>For
+        Invoice&GO usage, this endpoint is used to get supplies data from
+        computers station. There are 2 use cases:<ol><li>Request from INVOICE&GO
+        with receipt number: <strong>fuel_station_id</strong> and
+        <strong>receipt_number</strong> must be set. This retrieves a single
+        supply. In remote cases, it can return more than one supply.<br/>If one
+        or more supplies are returned, the system found useful data.<br/>If the
+        http code is 204 (No content) the customer has to go on manually (or try
+        again the procedure).<br/>In all other cases, the customer cannot go
+        ahed. If in the error body there is the message <strong>"Not
+        found"</strong>, the receipt number is wrong or the supply does not
+        exist.If in the error there is the message <strong>"Time out"</strong>,
+        the computer station did not response to our request.If in the error
+        there is the message <strong>"Petrol card"</strong> means the supply was
+        present, but was made using a petrol card and cannot be invoiced from
+        the app.</li><li>Request from FE1TOUCH:
+        <strong>fuel_station_id</strong>, <strong>dispenser_number</strong> and
+        <strong>rows</strong> must be set. This returns a list of the last rows
+        supplies. </li></ol>'
+      responses:
+        "200":
+          description: Supplies successfully retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/supplyOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/customers/{id}/qr:
+    get:
+      tags:
+        - Customer
+      summary: Return customer qr code value
+      description: Return the string used to draw the customer qr code
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieved qr value
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/customerOutput"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/articles/search:
+    get:
+      tags:
+        - Article
+      summary: Retrieve articles data
+      description:
+        "Retrieve all available articles for the user, filtered using one
+        of the query parameters described above.<h3>Query string
+        parameters</h3><ul><li><strong>supplier_id</strong>: if set, the output
+        will contain all the articles created for this
+        supplier.</li><li><strong>fuel_station_id</strong>: if set, the output
+        will be the list of the articles available in the input fuel
+        station</li><li><strong>vehicle_id</strong>: if set, the output will be
+        the list of the articles available for the input
+        vehicle</li><li><strong>customer_id</strong>: if set, the output will be
+        the list of the articles available for the input
+        customer</li><li><strong>card_id</strong>: if set, the output will be
+        the list of the articles linked to the input card</li></ul><br/>If
+        <strong>no one</strong> of the query parameters is set, the endpoint
+        will return the articles available for the logged user."
+      parameters:
+        - name: category_id
+          in: query
+          schema:
+            type: string
+        - name: customer_id
+          in: query
+          schema:
+            type: string
+        - name: fuel_station_id
+          in: query
+          schema:
+            type: string
+        - name: supplier_id
+          in: query
+          schema:
+            type: string
+        - name: card_id
+          in: query
+          schema:
+            type: string
+        - name: vehicle_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Articles list, filterd with the received query parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/articleOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users/me:
+    get:
+      tags:
+        - User
+      summary: Return info about the logged user
+      description: Return info about the logged user
+      responses:
+        "200":
+          description: Retrieved user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/userOutput"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/fuelstations/{id}:
+    get:
+      tags:
+        - Fuel Station
+      summary: Retrieve fuel station by id
+      description: Retrieve fuel station by id
+      parameters:
+        - name: isQr
+          in: query
+          schema:
+            type: string
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Fuel station correctly retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/fuelStationOutput"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/fuelstations:
+    post:
+      tags:
+        - Fuel Station
+      summary: Create new fuel station
+      description:
+        <h4>Not available for customer users. Available only if the user is
+        a manager or has an higher level.</h4> Create new fuel station with
+        given data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/fuelStationInput"
+        required: true
+      responses:
+        "201":
+          description: Created new fuel station
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/fuelstations/search:
+    get:
+      tags:
+        - Fuel Station
+      summary: Retrieve all fuelstations matching the input criteria
+      description:
+        "Retrieve all available fuelstations for the user matching the
+        received search parameters. It can be used to draw the map or to make
+        the list of the nearest fuel stations<h3>Query string
+        parameters</h3><ul><li><strong>service</strong>: the service requesting
+        the fuel stations list. Used to filter data depending on the serivce
+        activated on fuel stations</li><li><strong>latitude</strong> and
+        <strong>longitude</strong> query parameters are set, it returns the list
+        of the nearest fuel stations.</li><li><strong>articles</strong>: filters
+        fuel stations that sell given <strong>articles</strong>.</ul>"
+      parameters:
+        - name: longitude
+          in: query
+          schema:
+            type: string
+        - name: articles
+          in: query
+          schema:
+            type: string
+        - name: latitude
+          in: query
+          schema:
+            type: string
+        - name: service
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description:
+            Retrieve all available fuelstations for the user, filtered using
+            the input parameters
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/fuelStationOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/vehicles/{id}/qr/email:
+    post:
+      tags:
+        - Vehicle
+      summary: Send vehicle QR code
+      description: Send a qr code to the logged user containing the requested vehicle
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "202":
+          description: Email sent
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/customers/{id}/vehicles:
+    get:
+      tags:
+        - Vehicle
+      summary: Retrieve vehicle owned by the customer
+      description:
+        "Return the customer's vehicles list. If <strong>articleId</strong>
+        is set, the vehicles are filtered for that article.<br/><i>Use case</i>:
+        use as articleId the value returned by the GET /supplies/search"
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: List of the retrieved vehicles
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/vehicleOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users:
+    put:
+      tags:
+        - User
+      summary: Edit user on db
+      description: Edit user on db
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userInput"
+        required: true
+      responses:
+        "204":
+          description: User successfully
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+    post:
+      tags:
+        - User
+      summary: Create a users
+      description:
+        Create new users with given data. From Invoice&GO app, master users
+        can create sub users. It is used if a company manager, for example,
+        wants to create one or more accounts for his employers.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userInput"
+        required: true
+      responses:
+        "201":
+          description: User successfully created
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/customers/{id}:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve a single customer
+      description: Retrieve a single customer with given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieved customer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/customerOutput"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+    put:
+      tags:
+        - Customer
+      summary: Edit a single customer
+      description: Edit a single customer identified by the given id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/customerInput"
+        required: true
+      responses:
+        "204":
+          description: Customer correctly updated
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/productfamilies:
+    get:
+      tags:
+        - ProductFamily
+      summary: Retrieve all product families
+      description: Retrieve all available product families for the user<h3>Query
+        string parameters</h3><ul><li><strong>market</strong> is an optional
+        boolean parameter.If the value is <i>true</i>, the endpoint will return
+        OIL product families.If the value is <i>false</i>, the endpoint will
+        return NON OIL product families.If not set, the endpoint returns all the
+        available product families.</li></ul><br/>
+      responses:
+        "200":
+          description: Retrieve all available product families for the user
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/productFamilyOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/customers/search:
+    get:
+      tags:
+        - Customer
+      summary: Retrieve all customers
+      description: "Retrieve all customers, filtered using the received query
+        parameters<h3>Query string
+        parameters</h3><ul><li><strong>db_only</strong>: if True, the endpoint
+        will search for the requested customer(s) only in our system. Otherwise,
+        it will search customer data in third part services, if it is not
+        present in our system.</li><li><strong>supplier_id</strong>: if set,
+        will return only Selfnet customers, from the specified
+        supplier</li><li><strong>vat</strong>: if set, it is used to return only
+        customers matching with that value</li><li><strong>fiscal_code</strong>:
+        if set, it is used to return only customers matching with that
+        value</li><li><strong>name</strong>: if set, it is used to return only
+        customers matching with that value</li><li><strong>code</strong>: if
+        set, it is used to return only customers matching with that
+        value</li><li><strong>limit</strong> and <strong>offset</strong> are set
+        to manage data pagination on backend side</li></ul><br/>If <strong>no
+        one</strong> of the query parameters is set, the endpoint will return
+        the customer bound to the logged user. It works only if the logged user
+        is a customer."
+      parameters:
+        - name: db_only
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: vat
+          in: query
+          schema:
+            type: string
+        - name: name
+          in: query
+          schema:
+            type: string
+        - name: offset
+          in: query
+          schema:
+            type: string
+        - name: fiscal_code
+          in: query
+          schema:
+            type: string
+        - name: code
+          in: query
+          schema:
+            type: string
+        - name: supplier_id
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description:
+            Retrieve all available customers for the user of the requested
+            supplier
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/customerOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users/customer/{id}:
+    post:
+      tags:
+        - User
+      summary: Bind the current user to the input customer
+      description: Bind the current user to the input customer
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/userOutput"
+        required: true
+      responses:
+        "201":
+          description: Bound created
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/vehicles:
+    post:
+      tags:
+        - Vehicle
+      summary: Create a new vehicle
+      description: Create new vehicle assigned to the input customer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/vehicleInput"
+        required: true
+      responses:
+        "201":
+          description: Vehicle successfully created
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users/{id}/fuelstations:
+    get:
+      tags:
+        - Fuel Station
+      summary: Retrieve fuel stations
+      description:
+        <h4>Not available for customer users. Available only if the user is
+        a manager or has an higher level.</h4>Retrieve user fuel stations
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Retrieved fuel stations
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/fuelStationOutputArray"
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "404":
+          description: 404 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/invoices/active:
+    put:
+      tags:
+        - Invoice
+      summary: Upsert an invoice
+      description:
+        Used to add a transaction to an existing invoice or create a new
+        invoice with the received transaction. Starting from one transaction
+        data, create a new invoice or update it if it already exists.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/activeInvoiceHeaderInput"
+        required: true
+      responses:
+        "201":
+          description: Invoice updated
+          content: {}
+        "204":
+          description: 204 response
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
+components:
+  schemas:
+    appliedPriceOutputArray:
+      title: applied_price_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          article_id:
+            type: integer
+            description: Article id referred by this price
+          fuel_station_id:
+            type: integer
+            description: Involved fuel station id
+          price_level_id:
+            type: integer
+            description: Price level id (attended, unattended, self, ...)
+          start_datetime:
+            type: string
+            description: The price is applied after this datetime
+            format: date-time
+          article_name:
+            type: string
+            description: Name of the article referred by this price
+          id:
+            type: integer
+            description: Unique applied_price identifier
+          unit_price:
+            type: number
+            description: Applied unit price
+          price_level_name:
+            type: string
+            description: Price level name (attended, unattended, self, ...)
+    vehicleOutput:
+      title: vehicle_output
+      type: object
+      properties:
+        is_enabled:
+          type: boolean
+          description: True if vehicle is active, false otherwise.
+        enabled_articles:
+          type: array
+          description: Enabled articles ids, lookup for article details using
+            /articles/{id} endpoint
+          items:
+            type: integer
+        driver:
+          type: string
+          description: Vehicle's driver identifier
+        plate:
+          type: string
+          description: Vehicle's plate
+        model:
+          type: string
+          description: Vehicle's model
+        id:
+          type: integer
+          description: Unique vehicle identifier
+        customer_id:
+          type: integer
+          description: Customer owner of the vehicle
+      description: Vehicle data output
+    userOutput:
+      title: user_output
+      type: object
+      properties:
+        user_role:
+          type: integer
+          description:
+            For Invoice&GO customer users, its value is <strong>0 for master
+            users</strong> and <strong>1 for sub users</strong>.
+        is_customer_iego:
+          type: boolean
+          description:
+            True if the linked customer is an Invoice&GO customer, false
+            otherwise
+        phone_number:
+          type: string
+          description: Phone number
+        id:
+          type: integer
+          description: Unique user identifier
+        customer_id:
+          type: integer
+          description: Optional customer id linked to this user
+        vehicle_id:
+          type: integer
+          description:
+            Used to assign one specific vehicle to this user. When this is set,
+            the user can use only this vehicle in Invoice&GO
+        supplier_id:
+          type: integer
+          description: Optional supplier id linked to the customer
+        email:
+          type: string
+          description: Login email
+          format: email
+        internal_properties:
+          type: object
+          properties:
+            is_enabled:
+              type: boolean
+              description: True if user is active, false otherwise
+            father_user_id:
+              type: integer
+              description: User who created this user
+            identity_provider_id:
+              type: integer
+              description: Id assigned from the identity provider
+            user_level_id:
+              type: integer
+              description: Level of the user
+      description: User data output
+    customerInput:
+      title: customer_input
+      type: object
+      properties:
+        invoice_notes:
+          type: string
+          description: Invoice custom notes
+        country:
+          type: string
+          description: Company country name
+        notes:
+          type: string
+          description: Optional notes
+        vat_number:
+          maxLength: 20
+          type: string
+          description: Company vat number
+        notify_recharge:
+          type: boolean
+          description:
+            True if the system sends an email to the customer to notify a
+            recharge operation, false otherwise
+        fee:
+          type: boolean
+          description: ECommerce customer fee
+        discount_level:
+          type: integer
+          description: Customer discount level
+        house_number:
+          type: string
+          description: Company house number
+        max_period_credit:
+          type: number
+          description: Max credit
+        charge_discount:
+          type: number
+          description: Discount amount for recharging operations
+        zip_code:
+          maxLength: 6
+          minLength: 4
+          type: integer
+          description: Company headquarter zip code
+        pec:
+          maxLength: 100
+          type: string
+          description: Company pec
+          format: email
+        province:
+          maxLength: 2
+          type: string
+          description: Province code
+        has_driver_request:
+          type: boolean
+          description:
+            True if the customer has to type the driver code when performing a
+            transaction, false otherwise
+        ignore_payment_mode_on_pos:
+          type: boolean
+          description: If true ignores customer payment mode for POS recharges
+        vat_id:
+          type: integer
+          description: Customer vat
+        oil_iban:
+          type: string
+          description: If not empty, oil invoices uses this iban if needed
+        has_driver_check:
+          type: boolean
+          description: True if the system check the driver code (it has to be an
+            authorizative PIN), false otherwise
+        app_can_see_balance:
+          type: boolean
+          description:
+            True if in the Selfnet mobile app user can see the customer credit,
+            false otherwise
+        merge_invoices:
+          type: boolean
+          description:
+            If True, OIL and NON OIL invoices are merged (where possible),
+            false otherwise
+        is_without_vat:
+          type: boolean
+          description: If True, the customer has no VAT number
+        fax_number:
+          maxLength: 50
+          type: string
+          description: Company fax number
+        internal_properties:
+          type: object
+          properties:
+            card_type_id:
+              type: integer
+              description: "Only for Selfnet GT cards customers, shows the owner
+                circuit.<br/>Possible valuesa are: <ul><li> 9 DKV</li><li>10
+                UTA</li><li>13 EWG</li><li>39 FAI</li><li>42 EDC
+                (RADIUS)</li></ul>"
+            registration_date:
+              type: string
+              description: Customer's registration date in the system
+              format: date-time
+            parent_id:
+              type: integer
+              description: Parent client ID reverse change management
+            associated_supplier_id:
+              type: integer
+              description: For multisupplier, linked supplier
+            is_external_customer:
+              type: boolean
+              description:
+                True if the customer is created by API called by third parties.
+                Only used in GET endpoints
+            is_exported:
+              type: boolean
+              description:
+                True if the customer is created and still never exported, false
+                otherwise
+            type:
+              type: string
+              description: "Customer type -> 'S': Society, 'P': Private"
+        residue_type:
+          type: integer
+          description: Shows on the receipt card or customer residue
+        stamp_duty:
+          type: boolean
+          description: If true invoices have stamp duty when numbers permits it
+        exposure:
+          type: number
+          description: Issued invoices still not payed
+        name:
+          maxLength: 81
+          type: string
+          description: Company complete name
+        sdi_code:
+          maxLength: 7
+          minLength: 6
+          type: string
+          description: SDI code used to receive electronic invoices
+        phone_number:
+          maxLength: 50
+          type: string
+          description: Company phone number
+        supplier_id:
+          type: integer
+          description: Supplier owner of customer data (not set for I&GO customers)
+        discount_group_id:
+          type: integer
+          description: Discount group identifier
+        country_id:
+          type: integer
+          description: Company country id
+        non_oil_iban:
+          type: string
+          description: If not empty, non oil invoices uses this iban if needed
+        birthday:
+          type: string
+          description: Customer birthday date
+          format: date-time
+        notify_2:
+          type: boolean
+          description:
+            True if the system sends an email to secondary customer email
+            address, false otherwise.<br/>If the field notify (or the field
+            notify_recharge) is set to False, this value is ignored.
+        code:
+          maxLength: 6
+          minLength: 4
+          type: string
+          description: Company code
+        notify_3:
+          type: boolean
+          description:
+            True if the system sends an email to third customer email address,
+            false otherwise.<br/>If the field notify (or the field
+            notify_recharge) is set to False, this value is ignored.
+        gender:
+          type: string
+          description: Customer gender
+        has_customer_recharge:
+          type: boolean
+          description:
+            True if the recharge operations increase the customer credit,False
+            if they increase the credit of the single involved card.
+        city:
+          maxLength: 30
+          type: string
+          description: Company headquarter city
+        notify_1:
+          type: boolean
+          description:
+            True if the system sends an email to main customer email address,
+            false otherwise.<br/>If the field notify (or the field
+            notify_recharge) is set to False, this value is ignored.
+        adm_code:
+          maxLength: 7
+          minLength: 6
+          type: string
+          description: Company sdi passive code
+        fiscal_code:
+          maxLength: 20
+          type: string
+          description: Company fiscal code
+        nexi_configuration:
+          type: string
+          description: ECommerce configuration
+        notify:
+          type: boolean
+          description:
+            True if the system sends an email to the customer to notify his
+            operations, false otherwise
+        article_id:
+          type: integer
+          description: Article id to add costs to the customer invoice
+        is_enabled:
+          type: boolean
+          description: True if customer is active, false otherwise
+        has_account_balance:
+          type: boolean
+          description:
+            True if the system generates the account balance for this customer,
+            false otherwise
+        enabled_vehicles:
+          type: array
+          description: Enabled vehicles ids, lookup for vehicle details using
+            /vehicles/{id} endpoint
+          items:
+            type: integer
+        electronic_invoice:
+          type: boolean
+          description: True if the customer use the ICAD Sistemi electronic invoice
+        start_invoice_date:
+          type: string
+          description:
+            For Selfnet customer, represents the electronic invoice starting
+            dateIf NULL, invoices start when the field electronic_invoice is
+            activated
+          format: date
+        payment_terms_id:
+          type: integer
+          description: Payment terms identifier. It is used only for Selfnet
+            customers<br/> Possible values are:<ul><li>2	5 gg data
+            fattura</li><li>3	15 gg data fattura</li><li>4	30 gg fine mese data
+            fattura</li><li>5	60 gg fine mese data fattura</li><li>6	90 gg fine
+            mese data fattura</li><li>22	Data Fattura</li><li>23	25 gg data
+            fattura</li><li>26	30 gg data fattura</li><li>27	45 gg data
+            fattura</li><li>28	35 gg data fattura</li><li>29	40 gg data
+            fattura</li><li>30	60 gg fine mese + 12gg</li><li>31	30 gg fine mese
+            + 12gg</li><li>32	20 gg data fattura</li><li>33	30 gg fine mese
+            +  8gg</li><li>34	60 gg fine mese + 10gg</li><li>35	30 gg fine mese
+            +  5gg</li><li>36	30 gg fine mese + 10gg</li><li>37	60 gg fine mese
+            + 15gg</li><li>38	10 gg data fattura</li><li>39	30 gg fine mese +
+            15gg</li><li>40	60 gg fine mese +  5gg</li><li>41	60 gg data
+            fattura</li><li>42	90 gg fine mese + 10gg</li><li>43	90 gg data
+            fattura</li></ul>
+        email:
+          maxLength: 100
+          type: string
+          description: Company email
+          format: email
+        address:
+          maxLength: 81
+          type: string
+          description: Company address
+        payment_mode_id:
+          type: string
+          description: "Payment mode identifier.<br/>Possible values
+            are:<ul><li><strong>MP01</strong>:
+            Contanti</li><li><strong>MP02</strong>:
+            Assegno</li><li><strong>MP03</strong>: assegno
+            circolare</li><li><strong>MP04</strong>: contanti presso
+            Tesoreria</li><li><strong>MP05</strong>:
+            Bonifico</li><li><strong>MP06</strong>: vaglia
+            cambiario</li><li><strong>MP07</strong>: bollettino
+            bancario</li><li><strong>MP08</strong>: Carta di
+            pagamento</li><li><strong>MP09</strong>:
+            RID</li><li><strong>MP10</strong>: RID
+            utenze</li><li><strong>MP11</strong>: RID
+            veloce</li><li><strong>MP12</strong>: Ricevuta
+            bancaria</li><li><strong>MP13</strong>:
+            MAV</li><li><strong>MP14</strong>: quietanza erario
+            stato</li><li><strong>MP15</strong>: giroconto su conti di
+            contabilità speciale</li><li><strong>MP16</strong>: domiciliazione
+            bancaria</li><li><strong>MP17</strong>: domiciliazione
+            postale</li><li><strong>MP18</strong>: Bollettino di c/c
+            postale</li><li><strong>MP19</strong>: SEPA Direct
+            Debit</li><li><strong>MP20</strong>: SEPA Direct Debit
+            CORE</li><li><strong>MP21</strong>: SEPA Direct Debit
+            B2B</li><li><strong>MP22</strong>: Trattenuta su somme già
+            riscosse</li><li><strong>MP23</strong>: PagoPA</li></ul>"
+        has_km_request:
+          type: boolean
+          description:
+            True if the customer has to type the km value when performing a
+            transaction, false otherwise
+        has_invoice:
+          type: boolean
+          description:
+            True if the customer needs to invoice his transactions, false
+            otherwise
+        has_km_check:
+          type: boolean
+          description:
+            True if the system check the value of the field has_km_request,
+            false otherwise
+        price_list_id:
+          type: integer
+          description: Price list identifier linked to this customer
+        payment_periodicity_id:
+          type: string
+          description: Payment periodicity identifier.<br/>Possible values
+            are:<ul><li><strong>N</strong> Immediata (both for Invoice&GO and
+            Selfnet customers)</li><li><strong>W</strong> Settimanale (only for
+            Selfnet customers)</li><li><strong>D</strong> 	Decade (only for
+            Selfnet customers)</li><li><strong>F</strong> 	Quindicinale (only
+            for Selfnet customers)</li><li><strong>M</strong> 	Mensile (both for
+            Invoice&GO and Selfnet
+            customers)</li><li><strong>B</strong> 	Bimestrale (only for Selfnet
+            customers)</li><li><strong>Q</strong> 	Trimestrale (only for Selfnet
+            customers)</li><li><strong>X</strong> 	Nessuna (only for Selfnet
+            customers)</li></ul>
+        enabled_articles:
+          type: array
+          description: Enabled articles ids, lookup for article details using
+            /articles/{id} endpoint
+          items:
+            type: integer
+        has_split_payment:
+          type: boolean
+          description: True if the customer use the split payment, false otherwise
+      description: Customer input data
+    activeInvoiceHeaderOutputArray:
+      title: active_invoice_header_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          is_immediate:
+            type: boolean
+            description:
+              True if the invoice is issued with immediate periodicity, false
+              otherwise
+          status_code:
+            type: string
+            description: Current status id of the invoice<br/>Possible values
+              are:<ul><li><strong>SF01</strong> Inserita dal cliente
+              (SF01)</li><li><strong>SF02</strong> Validata dal gestore
+              (SF02)</li><li><strong>SF03</strong>
+              Inviata	(SF03)</li><li><strong>SF04</strong>
+              Errore	(SF04)</li><li><strong>SF05</strong> Consegnata
+              (SF05)</li><li><strong>SF07</strong> Scartata
+              (SF07)</li><li><strong>SF08</strong> Accettata dal destinatario
+              (SF08)</li><li><strong>SF09</strong> Rifiutata dal destinatario
+              (SF09)</li><li><strong>SF010</strong> 	Accettata automaticamente
+              (SF10)</li><li><strong>SF011</strong> 	Non consegnata (definitivo)
+              (SF11)</li><li><strong>SF012</strong> 	Rifiutata manualmente
+              (SF12)</li></ul>
+          fuel_station_id:
+            type: integer
+            description:
+              Optional reference to the fuel station where the invoice is
+              created. If this is NULL, supplier_id must be set.
+          sending_counter_hex:
+            type: string
+            description: Unique invoice counter, used in the invoice file name
+          error_info:
+            type: string
+            description: Error message, if available
+          year:
+            type: integer
+            description: Year when the invoice is issued
+          sending_datetime:
+            type: string
+            description: Date time when the invoice is scheduled for issuing
+            format: date-time
+          number:
+            type: string
+            description: Invoice number
+          fuel_station_city:
+            type: string
+            description: City of the involved fuel station (if present)
+          is_oil:
+            type: boolean
+            description:
+              True if the invoice contains only oil transactions, false if it
+              contains only non oil transactions. NULL if it contains both of
+              them.
+          fuel_station_full_address:
+            type: string
+            description: Concat of fuel_station_flag, fuel_station_name,
+              fuel_station_address and fuel_station_city
+          causal:
+            type: string
+            description: Invoice causal
+          details:
+            type: array
+            items:
+              type: object
+              properties:
+                transaction_id:
+                  type: string
+                  description: Transaction ID from station PC
+                km:
+                  type: integer
+                  description: Optional odometer value
+                quantity:
+                  type: number
+                  description: Quantity of the purchased article
+                fuel_station_id:
+                  type: integer
+                  description: Optional fuel station id involved
+                notes:
+                  type: string
+                  description: Transaction notes
+                discount_increase:
+                  type: number
+                  description: "0 if there is no discount on the transaction's total amount. "
+                payments:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      amount:
+                        type: number
+                        description: Amount payed with this payment method
+                      payment_method_code:
+                        type: string
+                        description: "Payment method code<br/>Possible values
+                          are:<ul><li><strong>MP01</strong>:
+                          Contanti</li><li><strong>MP02</strong>:
+                          Assegno</li><li><strong>MP03</strong>: assegno
+                          circolare</li><li><strong>MP04</strong>: contanti
+                          presso Tesoreria</li><li><strong>MP05</strong>:
+                          Bonifico</li><li><strong>MP06</strong>: vaglia
+                          cambiario</li><li><strong>MP07</strong>: bollettino
+                          bancario</li><li><strong>MP08</strong>: Carta di
+                          pagamento</li><li><strong>MP09</strong>:
+                          RID</li><li><strong>MP10</strong>: RID
+                          utenze</li><li><strong>MP11</strong>: RID
+                          veloce</li><li><strong>MP12</strong>: Ricevuta
+                          bancaria</li><li><strong>MP13</strong>:
+                          MAV</li><li><strong>MP14</strong>: quietanza erario
+                          stato</li><li><strong>MP15</strong>: giroconto su
+                          conti di contabilità
+                          speciale</li><li><strong>MP16</strong>: domiciliazione
+                          bancaria</li><li><strong>MP17</strong>: domiciliazione
+                          postale</li><li><strong>MP18</strong>: Bollettino di
+                          c/c postale</li><li><strong>MP19</strong>: SEPA Direct
+                          Debit</li><li><strong>MP20</strong>: SEPA Direct Debit
+                          CORE</li><li><strong>MP21</strong>: SEPA Direct Debit
+                          B2B</li><li><strong>MP22</strong>: Trattenuta su somme
+                          già riscosse</li><li><strong>MP23</strong>:
+                          PagoPA</li></ul>"
+                ddt_number:
+                  type: string
+                  description: DDT number associated to the transaction
+                transaction_timestamp:
+                  type: string
+                  description: Transaction datetime
+                  format: date-time
+                unit_price:
+                  type: number
+                  description: Unit price of the purchased article
+                detail_status_code:
+                  type: string
+                  description:
+                    Current status of this record. It can be SF01 (to be approved),
+                    SF02 (approved) or SF12 (manually rejected)
+                card_id:
+                  type: integer
+                  description: Optional card involved in this transaction
+                article_id:
+                  type: integer
+                  description: Purchased article id
+                receipt_number:
+                  type: string
+                  description: Associated ticket id
+                is_oil:
+                  type: boolean
+                  description: True if the transaction refers to OIL article, false otherwise
+                insert_invoice_mode_id:
+                  type: integer
+                  description:
+                    "Identifies transaction's origin. Possibile values:<br/><ul><li>1:
+                    manual insert by manager</li><li>2: manual insert by the
+                    customer</li><li>3: from station PC</li><li>4: from Self, by
+                    customer with ticket number</li><li>: Selfnet
+                    transaction</li></ul>"
+                total_amount:
+                  type: number
+                  description: Total gros amount of this transaction
+                image_data:
+                  type: string
+                  description: Optional attached receipt image
+                credit_note_detail_id:
+                  type: integer
+                  description:
+                    Optional credit note detail id (used when this transaction is
+                    reversed)
+                unit_of_measure:
+                  type: string
+                  description: Unit of measure used
+                id:
+                  type: integer
+                  description: Unique invoice detail identifier
+                decrement_total:
+                  type: boolean
+                  description:
+                    If true, decrements transaction amount from the total. False
+                    otherwise.
+                vehicle_id:
+                  type: integer
+                  description: Vehicle ID
+          id:
+            type: integer
+            description: Unique invoice identifier
+          is_customer_split:
+            type: boolean
+            description: True if the customer is under split payment, false otherwise
+          payment_date:
+            type: string
+            description:
+              The date when the invoice is payed by the customer (if payment
+              scheduler is active)
+            format: date-time
+          sending_error:
+            type: boolean
+            description: True if during the first sending attempt, an error occured
+          issuing_datetime:
+            type: string
+            description: Date time when the invoice is issued
+            format: date-time
+          amount:
+            type: number
+            description: Total amount of the invoice
+          is_from_selfnet:
+            type: boolean
+            description:
+              True if the invoice refers to Selfnet (invoice generated by cards),
+              false otherwise (Invoice&GO invoices)
+          customer_payment_method:
+            type: string
+            description:
+              Only for Selfnet invoices (not I&GO). It contains the name of the
+              payment method used by the involved customer
+          discount_increase:
+            type: number
+            description:
+              0 if there is no discount/increse on the invoice amount. The value
+              is positive for an increase, negative for a discount.
+          cost_center_id:
+            type: integer
+            description: Cost center optionally linked to the invoice
+          is_downloaded:
+            type: boolean
+            description:
+              "True if the invoice was downloaded with the massive donwload,
+              false otherwise "
+          is_electronically_stored:
+            type: boolean
+            description: True if the invoice is electronically stored, false otherwise
+          has_withholding:
+            type: boolean
+            description: True if the invoice has withholding, false otherwise
+          protocol_id:
+            type: integer
+            description: Optional procotol id assigned to this invoice
+          payment_date_expire:
+            type: string
+            description:
+              The date when the invoice payment expires (if payment scheduler is
+              active)
+            format: date-time
+          fuel_station_flag:
+            type: string
+            description: Flag of the involved fuel station (if present)
+          fuel_station_name:
+            type: string
+            description: Name of the involved fuel station (if present)
+          document_type_id:
+            type: string
+            description: "Invoice type id.<br/>Possible values
+              are:<ul><li><storng>TD01</strong>: Fattura
+              immediata</li><li><storng>TD04</strong>: Nota di
+              Credito</li><li><storng>TD17</strong>: Integrazione/autofattura
+              per acquisto servizi dall’estero</li><li><storng>TD18</strong>:
+              Integrazione per acquisto di beni
+              intracomunitari</li><li><storng>TD19</strong>:
+              Integrazione/autofattura per acquisto di beni ex art.17 c.2 DPR
+              633/72</li><li><storng>TD24</strong>: Fattura differita di cui
+              all’art.21, comma 4, lett. a)</li><li><storng>TD27</strong>:
+              Fattura per autoconsumo o per cessioni gratuite senza
+              rivalsa</li></ul>"
+          payment_notes:
+            type: string
+            description:
+              Optional notes linked to the payment (if payment scheduler is
+              active)
+          father_id:
+            type: integer
+            description:
+              Reference to the optional invoice who generated this (used in case
+              of credit note)
+          customer_id:
+            type: integer
+            description: Customer who is the recipient of the invoice
+          fuel_station_address:
+            type: string
+            description: Address of the involved fuel station (if present)
+          supplier_id:
+            type: integer
+            description:
+              Id of the supplier who owns the invoice. In an active invoice, if
+              this is NULL, fuel_station_id must be set.
+          user:
+            type: string
+            description: Username who created the invoice
+    fuelStationInput:
+      title: fuel_station_input
+      type: object
+      properties:
+        unattended_manual_insert:
+          type: boolean
+          description:
+            True if after failing an attempt to retrieve data from the computer
+            station, the user can proceed manually for an unattended transaction
+        country:
+          type: string
+          description: Company country name
+        disable_self_discount:
+          type: boolean
+          description:
+            True if the self service customer discount is disabled, false
+            otherwise
+        code:
+          type: string
+          description: Code assigned to the fuel station by the supplier
+        notes:
+          type: string
+          description: Optional notes
+        city:
+          maxLength: 30
+          type: string
+          description: Company headquarter city
+        attended_is_receipt_number_mandatory:
+          type: boolean
+          description: True if the receipt number is mandatory for attended transactions
+        vat_number:
+          maxLength: 20
+          type: string
+          description: Company vat number
+        latitude:
+          type: number
+          description: Latitude of the fuel station
+        adm_code:
+          maxLength: 7
+          minLength: 6
+          type: string
+          description: Company sdi passive code
+        attended_is_photo_mandatory:
+          type: boolean
+          description: True if the receipt photo is mandatory for attended transactions
+        unattended_is_receipt_number_mandatory:
+          type: boolean
+          description: True if the receipt number is mandatory for unattended transactions
+        house_number:
+          type: string
+          description: Company house number
+        unattended_auto_retrieve_invoice_data:
+          type: boolean
+          description:
+            True if this fuel station can retrieve data from the computer
+            station for unattended transactions
+        fiscal_code:
+          maxLength: 20
+          type: string
+          description: Company fiscal code
+        unattended_is_photo_mandatory:
+          type: integer
+          description:
+            "This fields determines if the photo for unattened photos is
+            mandatory. <br/>The possible values are:<ul><li>0: the photo is
+            never mandatory</li><li>1: the photo is mandatory only for manual
+            inserts</li><li>2: the photo is always mandatory</li></ul>"
+        zip_code:
+          maxLength: 6
+          minLength: 4
+          type: integer
+          description: Company headquarter zip code
+        pec:
+          maxLength: 100
+          type: string
+          description: Company pec
+          format: email
+        unattended_default_status_id:
+          type: integer
+          description:
+            Link to the default invoice status ('1' stands for 'approved' and
+            '2' for 'to be approved') for unattended transactions
+        automation:
+          type: string
+          description: Identifies fuel station automation
+        attended_manual_insert:
+          type: boolean
+          description:
+            True if after failing an attempt to retrieve data from the computer
+            station, the customer can proceed manually for an attended
+            transaction
+        province:
+          maxLength: 2
+          type: string
+          description: Province code
+        manager_id:
+          type: integer
+          description: Id of the fuel station manager
+        email:
+          maxLength: 100
+          type: string
+          description: Company email
+          format: email
+        longitude:
+          type: number
+          description: Longitude of the fuel station
+        store_id:
+          type: string
+          description: Store id of the fuel station
+        address:
+          maxLength: 81
+          type: string
+          description: Company address
+        fax_number:
+          maxLength: 50
+          type: string
+          description: Company fax number
+        attended_auto_retrieve_invoice_data:
+          type: boolean
+          description:
+            True if this fuel station can retrieve data from the computer
+            station for attended transactions
+        internal_properties:
+          type: object
+          properties:
+            is_master:
+              type: boolean
+              description:
+                True if this fuel station (in multisupplier configuration) is the
+                master, false otherwise
+            total_sms:
+              type: integer
+              description: Total sms
+            invoice_header_id:
+              type: integer
+              description: Link with the invoice header data to be used
+            has_non_oil:
+              type: boolean
+              description:
+                True if this fuel station has the non oil Selfnet invoicing, false
+                otherwise
+            has_invoice:
+              type: boolean
+              description:
+                True if this fuel station issues invoices without supplier header
+                data, false otherwise (the header is read from the supplier)
+            has_pos_recharge:
+              type: boolean
+              description: True if the pos can perform recharging operations, false otherwise
+            protocol_id:
+              type: integer
+              description: Link to the protocol to be used in the invoices
+            total_email:
+              type: integer
+              description: Total emails
+            range_sms:
+              type: boolean
+              description: Settings for sending sms
+            is_enabled:
+              type: boolean
+              description: True if the fuel station is active, false otherwise
+            dispensers_count:
+              type: integer
+              description: Total count of the dispenser active in the fuel station
+            has_non_oil_invoice_and_go:
+              type: boolean
+              description:
+                True if this fuel station has the non oil Invoice&GO invoicing,
+                false otherwise
+            is_code:
+              type: string
+              description: ICAD Sistemi fuel station code
+            range_email:
+              type: boolean
+              description: Settings for sending emails
+            has_igo_invoice:
+              type: boolean
+              description: True if this fuel station has Invoice&GO invoicing, false otherwise
+            has_manual_ddt:
+              type: boolean
+              description: True if the fuel station has manual ddt, false otherwise
+            duplicate_master:
+              type: boolean
+              description:
+                True if in multisupplier, the system duplicates the transactions
+                from the master to the slave, false otherwise
+        enabled_articles:
+          type: array
+          description: Enabled articles ids, lookup for article details using
+            /articles/{id} endpoint
+          items:
+            type: integer
+        attended_default_status_id:
+          type: integer
+          description:
+            Link to the default invoice status ('1' stands for 'approved' and
+            '2' for 'to be approved') for attended transactions
+        name:
+          maxLength: 81
+          type: string
+          description: Company complete name
+        phone_number:
+          maxLength: 50
+          type: string
+          description: Company phone number
+        supplier_id:
+          type: integer
+          description: Store id of the fuel station
+        country_id:
+          type: integer
+          description: Company country id
+      description: Fuel station data input
+    activeInvoiceHeaderInput:
+      title: active_invoice_header_invoice_input
+      type: object
+      properties:
+        is_from_selfnet:
+          type: boolean
+          description:
+            True if the invoice refers to Selfnet (invoice generated by cards),
+            false otherwise (Invoice&GO invoices)
+        status_code:
+          type: string
+          description: Current status id of the invoice<br/>Possible values
+            are:<ul><li><strong>SF01</strong> Inserita dal cliente
+            (SF01)</li><li><strong>SF02</strong> Validata dal gestore
+            (SF02)</li><li><strong>SF03</strong>
+            Inviata	(SF03)</li><li><strong>SF04</strong>
+            Errore	(SF04)</li><li><strong>SF05</strong> Consegnata
+            (SF05)</li><li><strong>SF07</strong> Scartata
+            (SF07)</li><li><strong>SF08</strong> Accettata dal destinatario
+            (SF08)</li><li><strong>SF09</strong> Rifiutata dal destinatario
+            (SF09)</li><li><strong>SF010</strong> 	Accettata automaticamente
+            (SF10)</li><li><strong>SF011</strong> 	Non consegnata (definitivo)
+            (SF11)</li><li><strong>SF012</strong> 	Rifiutata manualmente
+            (SF12)</li></ul>
+        fuel_station_id:
+          type: integer
+          description:
+            Optional reference to the fuel station where the invoice is
+            created. If this is NULL, supplier_id must be set.
+        document_type_id:
+          type: string
+          description: "Invoice type id.<br/>Possible values
+            are:<ul><li><storng>TD01</strong>: Fattura
+            immediata</li><li><storng>TD04</strong>: Nota di
+            Credito</li><li><storng>TD17</strong>: Integrazione/autofattura per
+            acquisto servizi dall’estero</li><li><storng>TD18</strong>:
+            Integrazione per acquisto di beni
+            intracomunitari</li><li><storng>TD19</strong>:
+            Integrazione/autofattura per acquisto di beni ex art.17 c.2 DPR
+            633/72</li><li><storng>TD24</strong>: Fattura differita di cui
+            all’art.21, comma 4, lett. a)</li><li><storng>TD27</strong>: Fattura
+            per autoconsumo o per cessioni gratuite senza rivalsa</li></ul>"
+        payment_notes:
+          type: string
+          description: Optional notes linked to the payment (if payment scheduler is active)
+        details:
+          type: array
+          items:
+            type: object
+            properties:
+              transaction_id:
+                type: string
+                description: Transaction ID from station PC
+              km:
+                type: integer
+                description: Optional odometer value
+              quantity:
+                type: number
+                description: Quantity of the purchased article
+              fuel_station_id:
+                type: integer
+                description: Optional fuel station id involved
+              notes:
+                type: string
+                description: Transaction notes
+              discount_increase:
+                type: number
+                description: "0 if there is no discount on the transaction's total amount. "
+              payments:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    amount:
+                      type: number
+                      description: Amount payed with this payment method
+                    payment_method_code:
+                      type: string
+                      description: "Payment method code<br/>Possible values
+                        are:<ul><li><strong>MP01</strong>:
+                        Contanti</li><li><strong>MP02</strong>:
+                        Assegno</li><li><strong>MP03</strong>: assegno
+                        circolare</li><li><strong>MP04</strong>: contanti presso
+                        Tesoreria</li><li><strong>MP05</strong>:
+                        Bonifico</li><li><strong>MP06</strong>: vaglia
+                        cambiario</li><li><strong>MP07</strong>: bollettino
+                        bancario</li><li><strong>MP08</strong>: Carta di
+                        pagamento</li><li><strong>MP09</strong>:
+                        RID</li><li><strong>MP10</strong>: RID
+                        utenze</li><li><strong>MP11</strong>: RID
+                        veloce</li><li><strong>MP12</strong>: Ricevuta
+                        bancaria</li><li><strong>MP13</strong>:
+                        MAV</li><li><strong>MP14</strong>: quietanza erario
+                        stato</li><li><strong>MP15</strong>: giroconto su conti
+                        di contabilità speciale</li><li><strong>MP16</strong>:
+                        domiciliazione bancaria</li><li><strong>MP17</strong>:
+                        domiciliazione postale</li><li><strong>MP18</strong>:
+                        Bollettino di c/c postale</li><li><strong>MP19</strong>:
+                        SEPA Direct Debit</li><li><strong>MP20</strong>: SEPA
+                        Direct Debit CORE</li><li><strong>MP21</strong>: SEPA
+                        Direct Debit B2B</li><li><strong>MP22</strong>:
+                        Trattenuta su somme già
+                        riscosse</li><li><strong>MP23</strong>:
+                        PagoPA</li></ul>"
+              ddt_number:
+                type: string
+                description: DDT number associated to the transaction
+              transaction_timestamp:
+                type: string
+                description: Transaction datetime
+                format: date-time
+              unit_price:
+                type: number
+                description: Unit price of the purchased article
+              detail_status_code:
+                type: string
+                description:
+                  Current status of this record. It can be SF01 (to be approved),
+                  SF02 (approved) or SF12 (manually rejected)
+              card_id:
+                type: integer
+                description: Optional card involved in this transaction
+              article_id:
+                type: integer
+                description: Purchased article id
+              receipt_number:
+                type: string
+                description: Associated ticket id
+              is_oil:
+                type: boolean
+                description: True if the transaction refers to OIL article, false otherwise
+              insert_invoice_mode_id:
+                type: integer
+                description:
+                  "Identifies transaction's origin. Possibile values:<br/><ul><li>1:
+                  manual insert by manager</li><li>2: manual insert by the
+                  customer</li><li>3: from station PC</li><li>4: from Self, by
+                  customer with ticket number</li><li>: Selfnet
+                  transaction</li></ul>"
+              total_amount:
+                type: number
+                description: Total gros amount of this transaction
+              image_data:
+                type: string
+                description: Optional attached receipt image
+              credit_note_detail_id:
+                type: integer
+                description:
+                  Optional credit note detail id (used when this transaction is
+                  reversed)
+              unit_of_measure:
+                type: string
+                description: Unit of measure used
+              id:
+                type: integer
+                description: Unique invoice detail identifier
+              decrement_total:
+                type: boolean
+                description:
+                  If true, decrements transaction amount from the total. False
+                  otherwise.
+              vehicle_id:
+                type: integer
+                description: Vehicle ID
+        id:
+          type: integer
+          description: Unique invoice identifier
+        customer_id:
+          type: integer
+          description: Customer who is the recipient of the invoice
+        supplier_id:
+          type: integer
+          description:
+            Id of the supplier who owns the invoice. In an active invoice, if
+            this is NULL, fuel_station_id must be set.
+        payment_date:
+          type: string
+          description:
+            The date when the invoice is payed by the customer (if payment
+            scheduler is active)
+          format: date-time
+      description: Active invoice header data input
+    customerOutput:
+      title: customer_output
+      type: object
+      properties:
+        invoice_notes:
+          type: string
+          description: Invoice custom notes
+        country:
+          type: string
+          description: Company country name
+        notes:
+          type: string
+          description: Optional notes
+        vat_number:
+          maxLength: 20
+          type: string
+          description: Company vat number
+        notify_recharge:
+          type: boolean
+          description:
+            True if the system sends an email to the customer to notify a
+            recharge operation, false otherwise
+        fee:
+          type: boolean
+          description: ECommerce customer fee
+        discount_level:
+          type: integer
+          description: Customer discount level
+        house_number:
+          type: string
+          description: Company house number
+        max_period_credit:
+          type: number
+          description: Max credit
+        charge_discount:
+          type: number
+          description: Discount amount for recharging operations
+        zip_code:
+          maxLength: 6
+          minLength: 4
+          type: integer
+          description: Company headquarter zip code
+        pec:
+          maxLength: 100
+          type: string
+          description: Company pec
+          format: email
+        province:
+          maxLength: 2
+          type: string
+          description: Province code
+        has_driver_request:
+          type: boolean
+          description:
+            True if the customer has to type the driver code when performing a
+            transaction, false otherwise
+        ignore_payment_mode_on_pos:
+          type: boolean
+          description: If true ignores customer payment mode for POS recharges
+        vat_id:
+          type: integer
+          description: Customer vat
+        oil_iban:
+          type: string
+          description: If not empty, oil invoices uses this iban if needed
+        id:
+          type: integer
+          description: Unique customer identifier
+        has_driver_check:
+          type: boolean
+          description: True if the system check the driver code (it has to be an
+            authorizative PIN), false otherwise
+        app_can_see_balance:
+          type: boolean
+          description:
+            True if in the Selfnet mobile app user can see the customer credit,
+            false otherwise
+        merge_invoices:
+          type: boolean
+          description:
+            If True, OIL and NON OIL invoices are merged (where possible),
+            false otherwise
+        is_without_vat:
+          type: boolean
+          description: If True, the customer has no VAT number
+        fax_number:
+          maxLength: 50
+          type: string
+          description: Company fax number
+        internal_properties:
+          type: object
+          properties:
+            card_type_id:
+              type: integer
+              description: "Only for Selfnet GT cards customers, shows the owner
+                circuit.<br/>Possible valuesa are: <ul><li> 9 DKV</li><li>10
+                UTA</li><li>13 EWG</li><li>39 FAI</li><li>42 EDC
+                (RADIUS)</li></ul>"
+            registration_date:
+              type: string
+              description: Customer's registration date in the system
+              format: date-time
+            parent_id:
+              type: integer
+              description: Parent client ID reverse change management
+            associated_supplier_id:
+              type: integer
+              description: For multisupplier, linked supplier
+            is_external_customer:
+              type: boolean
+              description:
+                True if the customer is created by API called by third parties.
+                Only used in GET endpoints
+            is_exported:
+              type: boolean
+              description:
+                True if the customer is created and still never exported, false
+                otherwise
+            type:
+              type: string
+              description: "Customer type -> 'S': Society, 'P': Private"
+        residue_type:
+          type: integer
+          description: Shows on the receipt card or customer residue
+        stamp_duty:
+          type: boolean
+          description: If true invoices have stamp duty when numbers permits it
+        exposure:
+          type: number
+          description: Issued invoices still not payed
+        name:
+          maxLength: 81
+          type: string
+          description: Company complete name
+        sdi_code:
+          maxLength: 7
+          minLength: 6
+          type: string
+          description: SDI code used to receive electronic invoices
+        phone_number:
+          maxLength: 50
+          type: string
+          description: Company phone number
+        supplier_id:
+          type: integer
+          description: Supplier owner of customer data (not set for I&GO customers)
+        discount_group_id:
+          type: integer
+          description: Discount group identifier
+        country_id:
+          type: integer
+          description: Company country id
+        non_oil_iban:
+          type: string
+          description: If not empty, non oil invoices uses this iban if needed
+        birthday:
+          type: string
+          description: Customer birthday date
+          format: date-time
+        notify_2:
+          type: boolean
+          description:
+            True if the system sends an email to secondary customer email
+            address, false otherwise.<br/>If the field notify (or the field
+            notify_recharge) is set to False, this value is ignored.
+        code:
+          maxLength: 6
+          minLength: 4
+          type: string
+          description: Company code
+        notify_3:
+          type: boolean
+          description:
+            True if the system sends an email to third customer email address,
+            false otherwise.<br/>If the field notify (or the field
+            notify_recharge) is set to False, this value is ignored.
+        gender:
+          type: string
+          description: Customer gender
+        has_customer_recharge:
+          type: boolean
+          description:
+            True if the recharge operations increase the customer credit,False
+            if they increase the credit of the single involved card.
+        city:
+          maxLength: 30
+          type: string
+          description: Company headquarter city
+        notify_1:
+          type: boolean
+          description:
+            True if the system sends an email to main customer email address,
+            false otherwise.<br/>If the field notify (or the field
+            notify_recharge) is set to False, this value is ignored.
+        adm_code:
+          maxLength: 7
+          minLength: 6
+          type: string
+          description: Company sdi passive code
+        fiscal_code:
+          maxLength: 20
+          type: string
+          description: Company fiscal code
+        nexi_configuration:
+          type: string
+          description: ECommerce configuration
+        notify:
+          type: boolean
+          description:
+            True if the system sends an email to the customer to notify his
+            operations, false otherwise
+        article_id:
+          type: integer
+          description: Article id to add costs to the customer invoice
+        is_enabled:
+          type: boolean
+          description: True if customer is active, false otherwise
+        has_account_balance:
+          type: boolean
+          description:
+            True if the system generates the account balance for this customer,
+            false otherwise
+        enabled_vehicles:
+          type: array
+          description: Enabled vehicles ids, lookup for vehicle details using
+            /vehicles/{id} endpoint
+          items:
+            type: integer
+        electronic_invoice:
+          type: boolean
+          description: True if the customer use the ICAD Sistemi electronic invoice
+        start_invoice_date:
+          type: string
+          description:
+            For Selfnet customer, represents the electronic invoice starting
+            dateIf NULL, invoices start when the field electronic_invoice is
+            activated
+          format: date
+        payment_terms_id:
+          type: integer
+          description: Payment terms identifier. It is used only for Selfnet
+            customers<br/> Possible values are:<ul><li>2	5 gg data
+            fattura</li><li>3	15 gg data fattura</li><li>4	30 gg fine mese data
+            fattura</li><li>5	60 gg fine mese data fattura</li><li>6	90 gg fine
+            mese data fattura</li><li>22	Data Fattura</li><li>23	25 gg data
+            fattura</li><li>26	30 gg data fattura</li><li>27	45 gg data
+            fattura</li><li>28	35 gg data fattura</li><li>29	40 gg data
+            fattura</li><li>30	60 gg fine mese + 12gg</li><li>31	30 gg fine mese
+            + 12gg</li><li>32	20 gg data fattura</li><li>33	30 gg fine mese
+            +  8gg</li><li>34	60 gg fine mese + 10gg</li><li>35	30 gg fine mese
+            +  5gg</li><li>36	30 gg fine mese + 10gg</li><li>37	60 gg fine mese
+            + 15gg</li><li>38	10 gg data fattura</li><li>39	30 gg fine mese +
+            15gg</li><li>40	60 gg fine mese +  5gg</li><li>41	60 gg data
+            fattura</li><li>42	90 gg fine mese + 10gg</li><li>43	90 gg data
+            fattura</li></ul>
+        email:
+          maxLength: 100
+          type: string
+          description: Company email
+          format: email
+        address:
+          maxLength: 81
+          type: string
+          description: Company address
+        payment_mode_id:
+          type: string
+          description: "Payment mode identifier.<br/>Possible values
+            are:<ul><li><strong>MP01</strong>:
+            Contanti</li><li><strong>MP02</strong>:
+            Assegno</li><li><strong>MP03</strong>: assegno
+            circolare</li><li><strong>MP04</strong>: contanti presso
+            Tesoreria</li><li><strong>MP05</strong>:
+            Bonifico</li><li><strong>MP06</strong>: vaglia
+            cambiario</li><li><strong>MP07</strong>: bollettino
+            bancario</li><li><strong>MP08</strong>: Carta di
+            pagamento</li><li><strong>MP09</strong>:
+            RID</li><li><strong>MP10</strong>: RID
+            utenze</li><li><strong>MP11</strong>: RID
+            veloce</li><li><strong>MP12</strong>: Ricevuta
+            bancaria</li><li><strong>MP13</strong>:
+            MAV</li><li><strong>MP14</strong>: quietanza erario
+            stato</li><li><strong>MP15</strong>: giroconto su conti di
+            contabilità speciale</li><li><strong>MP16</strong>: domiciliazione
+            bancaria</li><li><strong>MP17</strong>: domiciliazione
+            postale</li><li><strong>MP18</strong>: Bollettino di c/c
+            postale</li><li><strong>MP19</strong>: SEPA Direct
+            Debit</li><li><strong>MP20</strong>: SEPA Direct Debit
+            CORE</li><li><strong>MP21</strong>: SEPA Direct Debit
+            B2B</li><li><strong>MP22</strong>: Trattenuta su somme già
+            riscosse</li><li><strong>MP23</strong>: PagoPA</li></ul>"
+        has_km_request:
+          type: boolean
+          description:
+            True if the customer has to type the km value when performing a
+            transaction, false otherwise
+        has_invoice:
+          type: boolean
+          description:
+            True if the customer needs to invoice his transactions, false
+            otherwise
+        has_km_check:
+          type: boolean
+          description:
+            True if the system check the value of the field has_km_request,
+            false otherwise
+        price_list_id:
+          type: integer
+          description: Price list identifier linked to this customer
+        payment_periodicity_id:
+          type: string
+          description: Payment periodicity identifier.<br/>Possible values
+            are:<ul><li><strong>N</strong> Immediata (both for Invoice&GO and
+            Selfnet customers)</li><li><strong>W</strong> Settimanale (only for
+            Selfnet customers)</li><li><strong>D</strong> 	Decade (only for
+            Selfnet customers)</li><li><strong>F</strong> 	Quindicinale (only
+            for Selfnet customers)</li><li><strong>M</strong> 	Mensile (both for
+            Invoice&GO and Selfnet
+            customers)</li><li><strong>B</strong> 	Bimestrale (only for Selfnet
+            customers)</li><li><strong>Q</strong> 	Trimestrale (only for Selfnet
+            customers)</li><li><strong>X</strong> 	Nessuna (only for Selfnet
+            customers)</li></ul>
+        enabled_articles:
+          type: array
+          description: Enabled articles ids, lookup for article details using
+            /articles/{id} endpoint
+          items:
+            type: integer
+        has_split_payment:
+          type: boolean
+          description: True if the customer use the split payment, false otherwise
+      description: Customer output data
+    supplierOutputArray:
+      title: supplier_output_array
+      type: array
+      description: Supplier data array
+      items:
+        type: object
+        properties:
+          country:
+            type: string
+            description: Company country name
+          code:
+            maxLength: 6
+            minLength: 4
+            type: string
+            description: Company code
+          address:
+            maxLength: 81
+            type: string
+            description: Company address
+          notes:
+            type: string
+            description: Optional notes
+          city:
+            maxLength: 30
+            type: string
+            description: Company headquarter city
+          vat_number:
+            maxLength: 20
+            type: string
+            description: Company vat number
+          invoice_header_id:
+            type: integer
+            description:
+              Invoice header identifier. This is used to set data in the invoice
+              created by this supplier.
+          adm_code:
+            maxLength: 7
+            minLength: 6
+            type: string
+            description: Company sdi passive code
+          house_number:
+            type: string
+            description: Company house number
+          protocol_id:
+            type: integer
+            description: Protocol identifier, used for supplier invoices
+          recharge_invoice:
+            type: boolean
+            description:
+              If true, the system issues invoices for recharging operations.
+              False otherwise.
+          fax_number:
+            maxLength: 50
+            type: string
+            description: Company fax number
+          fiscal_code:
+            maxLength: 20
+            type: string
+            description: Company fiscal code
+          generate_autoinvoice_td27:
+            type: boolean
+            description:
+              If true, the system use document type 'TD27' for auto invoices.
+              False otherwise.
+          zip_code:
+            maxLength: 6
+            minLength: 4
+            type: integer
+            description: Company headquarter zip code
+          internal_properties:
+            type: object
+            properties:
+              is_enabled:
+                type: boolean
+                description: True if supplier is active
+              max_deliverable:
+                type: number
+                description: Max deliverable amount in a single supply operation
+              auto_emission_account_balance:
+                type: boolean
+                description:
+                  If true, account balances are automatically created. False
+                  otherwise.
+              logo:
+                type: string
+                description: Logo uri
+              max_rechargeable:
+                type: number
+                description: Max rechargeable amount in a single recharge operation
+              notification_date_reorder_legal_archiving_service:
+                type: string
+                description: ""
+                format: date-time
+              sign_space:
+                type: boolean
+                description:
+                  If true, pos prints the signing space at the bottom. False
+                  otherwise.
+          pec:
+            maxLength: 100
+            type: string
+            description: Company pec
+            format: email
+          province:
+            maxLength: 2
+            type: string
+            description: Province code
+          name:
+            maxLength: 81
+            type: string
+            description: Company complete name
+          phone_number:
+            maxLength: 50
+            type: string
+            description: Company phone number
+          short_name:
+            type: string
+            description: Supplier portal name. This is the name showed in portal and apps.
+          email:
+            maxLength: 100
+            type: string
+            description: Company email
+            format: email
+          country_id:
+            type: integer
+            description: Company country id
+          fuel_coupon_invoice:
+            type: boolean
+            description:
+              If true, the system issues invoices for fuel coupons creations.
+              False otherwise.
+    paymentTermsOutputArray:
+      title: payment_terms_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          stars_from_month_end:
+            type: boolean
+            description:
+              If True, days are counted from the end of the mont. Otherwise, from
+              the invoice date.
+          name:
+            type: string
+            description: Payment terms name
+          days:
+            type: integer
+            description: Number of days to add to calculate the invoice payment expire date
+          id:
+            type: integer
+            description: Unique payment terms identifier
+    supplyOutputArray:
+      title: supply_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          fuel_station_id:
+            type: integer
+            description: Id of the fuel station where the supply is performed
+          total_discount:
+            type: number
+            description: Total discount (or decrease).
+          quantity:
+            type: number
+            description: Quantity purchased of the involved article
+          notes:
+            type: string
+            description: Optional notes. Used in manual supplies.
+          unit_discount:
+            type: number
+            description: Unit discount (or decrease)
+          article_name:
+            type: integer
+            description: Name of the purchased article
+          supply_number:
+            type: integer
+            description: Transaction number linked to the supply
+          gross_amount:
+            type: number
+            description: Supply gross amount
+          is_invoiced:
+            type: boolean
+            description:
+              True if the supply is invoiced, False if it hasn't to be invoice.
+              NULL if it has to be processed.
+          pump_number:
+            type: string
+            description: Involved pump number.
+          is_reversal:
+            type: boolean
+            description: True if this is a reversal supply, false otherwise
+          article_id:
+            type: integer
+            description: Id of the purchased article
+          supply_datetime:
+            type: string
+            description: Supply datetime
+            format: date-time
+          is_stand_alone:
+            type: boolean
+            description: True if this is a stand alone supply, false otherwise
+          price:
+            type: number
+            description: Unit price applied in this supply
+          receive_datetime:
+            type: string
+            description: When supply data are received
+            format: date-time
+          net_amount:
+            type: number
+            description: Supply net amount
+          id:
+            type: integer
+            description: Unique supply identifier
+          terminal_id:
+            type: string
+            description: Terminal id linked to the supply
+          is_outdoor:
+            type: boolean
+            description: True if this is an outdoor supply, false indoor
+    vehicleInput:
+      title: vehicle_input
+      type: object
+      properties:
+        is_enabled:
+          type: boolean
+          description: True if vehicle is active, false otherwise.
+        enabled_articles:
+          type: array
+          description: Enabled articles ids, lookup for article details using
+            /articles/{id} endpoint
+          items:
+            type: integer
+        driver:
+          type: string
+          description: Vehicle's driver identifier
+        plate:
+          type: string
+          description: Vehicle's plate
+        model:
+          type: string
+          description: Vehicle's model
+        customer_id:
+          type: integer
+          description: Customer owner of the vehicle
+      description: vehicle data input
+    userInput:
+      title: user_input
+      type: object
+      properties:
+        phone_number:
+          type: string
+          description: Phone number
+        vehicle_id:
+          type: integer
+          description:
+            Used to assign one specific vehicle to this user. When this is set,
+            the user can use only this vehicle in Invoice&GO
+        email:
+          type: string
+          description: Login email
+          format: email
+        internal_properties:
+          type: object
+          properties:
+            is_enabled:
+              type: boolean
+              description: True if user is active, false otherwise
+            father_user_id:
+              type: integer
+              description: User who created this user
+            identity_provider_id:
+              type: integer
+              description: Id assigned from the identity provider
+            user_level_id:
+              type: integer
+              description: Level of the user
+      description: User data input
+    passiveInvoiceHeaderOutputArray:
+      title: passive_invoice_header_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          issuing_datetime:
+            type: string
+            description: Date time when the invoice is issued
+            format: date-time
+          seller_fiscal_code:
+            type: string
+            description: Fiscal code of the invoice issuer
+          amount:
+            type: number
+            description: Total amount of the invoice
+          year:
+            type: integer
+            description: Year when the invoice is issued
+          protocol_number:
+            type: string
+            description: Protocol number
+          accounting_record_datetime:
+            type: string
+            description: Accounting registration date
+            format: date-time
+          storage_status_id:
+            type: integer
+            description:
+              Shows the current status in the electronic storage flow (if
+              available).<br/>Possible values are:<ul><li>1	Da
+              compilare</li><li>2	Compilata</li><li>3	Pronta per
+              l'invio</li><li>4	Inviata</li><li>5	Conservata (only this is used
+              for active invoices, the other values are for passive
+              invoices)</li><li>6	Errore</li></ul>
+          customer_vat:
+            type: string
+            description: Vat of the invoice recipient
+          is_downloaded:
+            type: boolean
+            description:
+              "True if the invoice was downloaded with the massive donwload,
+              false otherwise "
+          is_electronically_stored:
+            type: boolean
+            description: True if the invoice is electronically stored, false otherwise
+          vat_protocol:
+            type: string
+            description: Protocol vat
+          invoice_pdv_id:
+            type: string
+            description: Id assigned to the invoice file by the electronic storage system
+          number:
+            type: string
+            description: Invoice number
+          seller_name:
+            type: string
+            description: Name of the invoice issuer
+          document_type_id:
+            type: string
+            description: "Invoice type id.<br/>Possible values
+              are:<ul><li><storng>TD01</strong>: Fattura
+              immediata</li><li><storng>TD04</strong>: Nota di
+              Credito</li><li><storng>TD17</strong>: Integrazione/autofattura
+              per acquisto servizi dall’estero</li><li><storng>TD18</strong>:
+              Integrazione per acquisto di beni
+              intracomunitari</li><li><storng>TD19</strong>:
+              Integrazione/autofattura per acquisto di beni ex art.17 c.2 DPR
+              633/72</li><li><storng>TD24</strong>: Fattura differita di cui
+              all’art.21, comma 4, lett. a)</li><li><storng>TD27</strong>:
+              Fattura per autoconsumo o per cessioni gratuite senza
+              rivalsa</li></ul>"
+          accounting_record_number:
+            type: string
+            description: Accounting registration number
+          causal:
+            type: string
+            description: Invoice causal
+          id:
+            type: integer
+            description: Unique invoice identifier
+          notification_pdv_id:
+            type: string
+            description:
+              Id assigned to the invoice notification file by the electronic
+              storage system
+          customer_name:
+            type: string
+            description: Name of the invoice recipient
+          receive_datetime:
+            type: string
+            description: Date time when the invoice is received by ICAD Sistemi
+            format: date-time
+          supplier_id:
+            type: integer
+            description:
+              Id of the supplier who owns the invoice. In an active invoice, if
+              this is NULL, fuel_station_id must be set.
+          protocol_datetime:
+            type: string
+            description: Protocol date
+            format: date-time
+    articleOutputArray:
+      title: article_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          ignore_category_protocol:
+            type: boolean
+            description:
+              True if invoices with this article can ignore the category protocol
+              and use only the fuel station/supplier protocol, false otherwise
+          code:
+            type: string
+            description: Article code
+          notes:
+            type: string
+            description: Article optional notes
+          is_system_reserved:
+            type: boolean
+            description: True if the article automatically created, false otherwise
+          internal_properties:
+            type: object
+            properties:
+              is_code:
+                type: integer
+                description: IS article code (only for OIL articles)
+          price_precision:
+            type: integer
+            description:
+              "Count of decimal numbers in the article price.<br/><i>Example</i>:
+              If this field value is '3', a valid unit price is 1,234, while
+              something like 1,23456 would be truncated to 1,234."
+          is_enabled:
+            type: boolean
+            description: True if article is active, false otherwise
+          unity_of_measure_id:
+            type: integer
+            description: Unity of measure used to register transactions with this article
+          is_oil:
+            type: boolean
+            description: True if the article is an oil article, false otherwise
+          category_id:
+            type: integer
+            description: Category linked to which the article belongs
+          name:
+            type: string
+            description: Article name
+          vat_id:
+            type: integer
+            description: Applied vat on the article
+          has_stamp_duty:
+            type: boolean
+            description: True if the article uses the stamp duty, false otherwise
+          id:
+            type: integer
+            description: Unique article identifier
+          supplier_id:
+            type: integer
+            description: Supplier owner of the article
+          article_point_id:
+            type: integer
+            description: Id of optional points settings (for fidelity campaigns)
+    passiveInvoiceHeaderInput:
+      title: passive_invoice_header_input
+      type: object
+      properties:
+        protocol_number:
+          type: string
+          description: Protocol number
+        document_type_id:
+          type: string
+          description: "Invoice type id.<br/>Possible values
+            are:<ul><li><storng>TD01</strong>: Fattura
+            immediata</li><li><storng>TD04</strong>: Nota di
+            Credito</li><li><storng>TD17</strong>: Integrazione/autofattura per
+            acquisto servizi dall’estero</li><li><storng>TD18</strong>:
+            Integrazione per acquisto di beni
+            intracomunitari</li><li><storng>TD19</strong>:
+            Integrazione/autofattura per acquisto di beni ex art.17 c.2 DPR
+            633/72</li><li><storng>TD24</strong>: Fattura differita di cui
+            all’art.21, comma 4, lett. a)</li><li><storng>TD27</strong>: Fattura
+            per autoconsumo o per cessioni gratuite senza rivalsa</li></ul>"
+        accounting_record_datetime:
+          type: string
+          description: Accounting registration date
+          format: date-time
+        storage_status_id:
+          type: integer
+          description:
+            Shows the current status in the electronic storage flow (if
+            available).<br/>Possible values are:<ul><li>1	Da
+            compilare</li><li>2	Compilata</li><li>3	Pronta per
+            l'invio</li><li>4	Inviata</li><li>5	Conservata (only this is used
+            for active invoices, the other values are for passive
+            invoices)</li><li>6	Errore</li></ul>
+        accounting_record_number:
+          type: string
+          description: Accounting registration number
+        id:
+          type: integer
+          description: Unique invoice identifier
+        supplier_id:
+          type: integer
+          description:
+            Id of the supplier who owns the invoice. In an active invoice, if
+            this is NULL, fuel_station_id must be set.
+        protocol_datetime:
+          type: string
+          description: Protocol date
+          format: date-time
+        vat_protocol:
+          type: string
+          description: Protocol vat
+      description: Passive invoice header data input
+    fuelStationOutput:
+      title: fuel_station_output
+      type: object
+      properties:
+        unattended_manual_insert:
+          type: boolean
+          description:
+            True if after failing an attempt to retrieve data from the computer
+            station, the user can proceed manually for an unattended transaction
+        country:
+          type: string
+          description: Company country name
+        disable_self_discount:
+          type: boolean
+          description:
+            True if the self service customer discount is disabled, false
+            otherwise
+        code:
+          type: string
+          description: Code assigned to the fuel station by the supplier
+        notes:
+          type: string
+          description: Optional notes
+        flag:
+          type: string
+          description: Reference to the fuel station banner.
+        city:
+          maxLength: 30
+          type: string
+          description: Company headquarter city
+        attended_is_receipt_number_mandatory:
+          type: boolean
+          description: True if the receipt number is mandatory for attended transactions
+        vat_number:
+          maxLength: 20
+          type: string
+          description: Company vat number
+        latitude:
+          type: number
+          description: Latitude of the fuel station
+        adm_code:
+          maxLength: 7
+          minLength: 6
+          type: string
+          description: Company sdi passive code
+        attended_is_photo_mandatory:
+          type: boolean
+          description: True if the receipt photo is mandatory for attended transactions
+        unattended_is_receipt_number_mandatory:
+          type: boolean
+          description: True if the receipt number is mandatory for unattended transactions
+        house_number:
+          type: string
+          description: Company house number
+        unattended_auto_retrieve_invoice_data:
+          type: boolean
+          description:
+            True if this fuel station can retrieve data from the computer
+            station for unattended transactions
+        fiscal_code:
+          maxLength: 20
+          type: string
+          description: Company fiscal code
+        unattended_is_photo_mandatory:
+          type: integer
+          description:
+            "This fields determines if the photo for unattened photos is
+            mandatory. <br/>The possible values are:<ul><li>0: the photo is
+            never mandatory</li><li>1: the photo is mandatory only for manual
+            inserts</li><li>2: the photo is always mandatory</li></ul>"
+        zip_code:
+          maxLength: 6
+          minLength: 4
+          type: integer
+          description: Company headquarter zip code
+        pec:
+          maxLength: 100
+          type: string
+          description: Company pec
+          format: email
+        unattended_default_status_id:
+          type: integer
+          description:
+            Link to the default invoice status ('1' stands for 'approved' and
+            '2' for 'to be approved') for unattended transactions
+        hasComputerStationConnection:
+          type: boolean
+          description:
+            True if the fuel station can communicate with the computer station.
+            False otherwise.
+        automation:
+          type: string
+          description: Identifies fuel station automation
+        attended_manual_insert:
+          type: boolean
+          description:
+            True if after failing an attempt to retrieve data from the computer
+            station, the customer can proceed manually for an attended
+            transaction
+        province:
+          maxLength: 2
+          type: string
+          description: Province code
+        manager_id:
+          type: integer
+          description: Id of the fuel station manager
+        id:
+          type: integer
+          description: Unique fuel station identifier
+        email:
+          maxLength: 100
+          type: string
+          description: Company email
+          format: email
+        longitude:
+          type: number
+          description: Longitude of the fuel station
+        store_id:
+          type: string
+          description: Store id of the fuel station
+        address:
+          maxLength: 81
+          type: string
+          description: Company address
+        fax_number:
+          maxLength: 50
+          type: string
+          description: Company fax number
+        attended_auto_retrieve_invoice_data:
+          type: boolean
+          description:
+            True if this fuel station can retrieve data from the computer
+            station for attended transactions
+        internal_properties:
+          type: object
+          properties:
+            is_master:
+              type: boolean
+              description:
+                True if this fuel station (in multisupplier configuration) is the
+                master, false otherwise
+            total_sms:
+              type: integer
+              description: Total sms
+            invoice_header_id:
+              type: integer
+              description: Link with the invoice header data to be used
+            has_non_oil:
+              type: boolean
+              description:
+                True if this fuel station has the non oil Selfnet invoicing, false
+                otherwise
+            has_invoice:
+              type: boolean
+              description:
+                True if this fuel station issues invoices without supplier header
+                data, false otherwise (the header is read from the supplier)
+            has_pos_recharge:
+              type: boolean
+              description: True if the pos can perform recharging operations, false otherwise
+            protocol_id:
+              type: integer
+              description: Link to the protocol to be used in the invoices
+            total_email:
+              type: integer
+              description: Total emails
+            range_sms:
+              type: boolean
+              description: Settings for sending sms
+            is_enabled:
+              type: boolean
+              description: True if the fuel station is active, false otherwise
+            dispensers_count:
+              type: integer
+              description: Total count of the dispenser active in the fuel station
+            has_non_oil_invoice_and_go:
+              type: boolean
+              description:
+                True if this fuel station has the non oil Invoice&GO invoicing,
+                false otherwise
+            is_code:
+              type: string
+              description: ICAD Sistemi fuel station code
+            range_email:
+              type: boolean
+              description: Settings for sending emails
+            has_igo_invoice:
+              type: boolean
+              description: True if this fuel station has Invoice&GO invoicing, false otherwise
+            has_manual_ddt:
+              type: boolean
+              description: True if the fuel station has manual ddt, false otherwise
+            duplicate_master:
+              type: boolean
+              description:
+                True if in multisupplier, the system duplicates the transactions
+                from the master to the slave, false otherwise
+        enabled_articles:
+          type: array
+          description: Enabled articles ids, lookup for article details using
+            /articles/{id} endpoint
+          items:
+            type: integer
+        attended_default_status_id:
+          type: integer
+          description:
+            Link to the default invoice status ('1' stands for 'approved' and
+            '2' for 'to be approved') for attended transactions
+        name:
+          maxLength: 81
+          type: string
+          description: Company complete name
+        phone_number:
+          maxLength: 50
+          type: string
+          description: Company phone number
+        supplier_id:
+          type: integer
+          description: Store id of the fuel station
+        country_id:
+          type: integer
+          description: Company country id
+      description:
+        Fields with prefix <i>unattended</i> only refers to FE1Touch app
+        and selfnet portal.<br>Fields with prefix <i>attended</i> only refers to
+        INVOICE&GO app.
+    fuelStationOutputArray:
+      title: fuel_station_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          unattended_manual_insert:
+            type: boolean
+            description:
+              True if after failing an attempt to retrieve data from the computer
+              station, the user can proceed manually for an unattended
+              transaction
+          country:
+            type: string
+            description: Company country name
+          disable_self_discount:
+            type: boolean
+            description:
+              True if the self service customer discount is disabled, false
+              otherwise
+          code:
+            type: string
+            description: Code assigned to the fuel station by the supplier
+          notes:
+            type: string
+            description: Optional notes
+          flag:
+            type: string
+            description: Reference to the fuel station banner.
+          city:
+            maxLength: 30
+            type: string
+            description: Company headquarter city
+          attended_is_receipt_number_mandatory:
+            type: boolean
+            description: True if the receipt number is mandatory for attended transactions
+          vat_number:
+            maxLength: 20
+            type: string
+            description: Company vat number
+          latitude:
+            type: number
+            description: Latitude of the fuel station
+          adm_code:
+            maxLength: 7
+            minLength: 6
+            type: string
+            description: Company sdi passive code
+          attended_is_photo_mandatory:
+            type: boolean
+            description: True if the receipt photo is mandatory for attended transactions
+          unattended_is_receipt_number_mandatory:
+            type: boolean
+            description: True if the receipt number is mandatory for unattended transactions
+          house_number:
+            type: string
+            description: Company house number
+          unattended_auto_retrieve_invoice_data:
+            type: boolean
+            description:
+              True if this fuel station can retrieve data from the computer
+              station for unattended transactions
+          fiscal_code:
+            maxLength: 20
+            type: string
+            description: Company fiscal code
+          unattended_is_photo_mandatory:
+            type: integer
+            description:
+              "This fields determines if the photo for unattened photos is
+              mandatory. <br/>The possible values are:<ul><li>0: the photo is
+              never mandatory</li><li>1: the photo is mandatory only for manual
+              inserts</li><li>2: the photo is always mandatory</li></ul>"
+          zip_code:
+            maxLength: 6
+            minLength: 4
+            type: integer
+            description: Company headquarter zip code
+          pec:
+            maxLength: 100
+            type: string
+            description: Company pec
+            format: email
+          unattended_default_status_id:
+            type: integer
+            description:
+              Link to the default invoice status ('1' stands for 'approved' and
+              '2' for 'to be approved') for unattended transactions
+          hasComputerStationConnection:
+            type: boolean
+            description:
+              True if the fuel station can communicate with the computer station.
+              False otherwise.
+          automation:
+            type: string
+            description: Identifies fuel station automation
+          attended_manual_insert:
+            type: boolean
+            description:
+              True if after failing an attempt to retrieve data from the computer
+              station, the customer can proceed manually for an attended
+              transaction
+          province:
+            maxLength: 2
+            type: string
+            description: Province code
+          manager_id:
+            type: integer
+            description: Id of the fuel station manager
+          id:
+            type: integer
+            description: Unique fuel station identifier
+          email:
+            maxLength: 100
+            type: string
+            description: Company email
+            format: email
+          longitude:
+            type: number
+            description: Longitude of the fuel station
+          store_id:
+            type: string
+            description: Store id of the fuel station
+          address:
+            maxLength: 81
+            type: string
+            description: Company address
+          fax_number:
+            maxLength: 50
+            type: string
+            description: Company fax number
+          attended_auto_retrieve_invoice_data:
+            type: boolean
+            description:
+              True if this fuel station can retrieve data from the computer
+              station for attended transactions
+          internal_properties:
+            type: object
+            properties:
+              is_master:
+                type: boolean
+                description:
+                  True if this fuel station (in multisupplier configuration) is the
+                  master, false otherwise
+              total_sms:
+                type: integer
+                description: Total sms
+              invoice_header_id:
+                type: integer
+                description: Link with the invoice header data to be used
+              has_non_oil:
+                type: boolean
+                description:
+                  True if this fuel station has the non oil Selfnet invoicing, false
+                  otherwise
+              has_invoice:
+                type: boolean
+                description:
+                  True if this fuel station issues invoices without supplier header
+                  data, false otherwise (the header is read from the supplier)
+              has_pos_recharge:
+                type: boolean
+                description: True if the pos can perform recharging operations, false otherwise
+              protocol_id:
+                type: integer
+                description: Link to the protocol to be used in the invoices
+              total_email:
+                type: integer
+                description: Total emails
+              range_sms:
+                type: boolean
+                description: Settings for sending sms
+              is_enabled:
+                type: boolean
+                description: True if the fuel station is active, false otherwise
+              dispensers_count:
+                type: integer
+                description: Total count of the dispenser active in the fuel station
+              has_non_oil_invoice_and_go:
+                type: boolean
+                description:
+                  True if this fuel station has the non oil Invoice&GO invoicing,
+                  false otherwise
+              is_code:
+                type: string
+                description: ICAD Sistemi fuel station code
+              range_email:
+                type: boolean
+                description: Settings for sending emails
+              has_igo_invoice:
+                type: boolean
+                description: True if this fuel station has Invoice&GO invoicing, false otherwise
+              has_manual_ddt:
+                type: boolean
+                description: True if the fuel station has manual ddt, false otherwise
+              duplicate_master:
+                type: boolean
+                description:
+                  True if in multisupplier, the system duplicates the transactions
+                  from the master to the slave, false otherwise
+          enabled_articles:
+            type: array
+            description: Enabled articles ids, lookup for article details using
+              /articles/{id} endpoint
+            items:
+              type: integer
+          attended_default_status_id:
+            type: integer
+            description:
+              Link to the default invoice status ('1' stands for 'approved' and
+              '2' for 'to be approved') for attended transactions
+          name:
+            maxLength: 81
+            type: string
+            description: Company complete name
+          phone_number:
+            maxLength: 50
+            type: string
+            description: Company phone number
+          supplier_id:
+            type: integer
+            description: Store id of the fuel station
+          country_id:
+            type: integer
+            description: Company country id
+    productFamilyOutputArray:
+      title: product_family_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          market:
+            type: boolean
+            description: If True, the family is managed by the pos. False otherwise.
+          code:
+            type: string
+            description: Product family code
+          name:
+            type: string
+            description: Product family name
+          id:
+            type: integer
+            description: Unique product family identifier
+    vehicleOutputArray:
+      title: vehicle_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          is_enabled:
+            type: boolean
+            description: True if vehicle is active, false otherwise.
+          enabled_articles:
+            type: array
+            description: Enabled articles ids, lookup for article details using
+              /articles/{id} endpoint
+            items:
+              type: integer
+          driver:
+            type: string
+            description: Vehicle's driver identifier
+          plate:
+            type: string
+            description: Vehicle's plate
+          model:
+            type: string
+            description: Vehicle's model
+          id:
+            type: integer
+            description: Unique vehicle identifier
+          customer_id:
+            type: integer
+            description: Customer owner of the vehicle
+    paymentPeriodicityOutputArray:
+      title: payment_periodicity_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          code:
+            type: string
+            description:
+              "Code of the payment periodicity<ul><li><strong>N</strong>:
+              Immediata</li><li><strong>W</strong>:
+              Settimanale</li><li><strong>D</strong>:
+              Decade</li><li><strong>F</strong>:
+              Quindicinale</li><li><strong>M</strong>:
+              Mensile</li><li><strong>B</strong>:
+              Bimestrale</li><li><strong>Q</strong>:
+              Trimestrale</li><li><strong>X</strong>: Nessuna</li></ul>"
+          electronic_invoice:
+            type: boolean
+            description: True if payment periodicity is available for electronic invoicing
+          name:
+            type: string
+            description: Name of the payment periodicity
+          id:
+            type: integer
+            description: Unique payment periodicity identifier
+    Empty:
+      title: Empty Schema
+      type: object
+    userOutputArray:
+      title: user_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          user_role:
+            type: integer
+            description:
+              For Invoice&GO customer users, its value is <strong>0 for master
+              users</strong> and <strong>1 for sub users</strong>.
+          is_customer_iego:
+            type: boolean
+            description:
+              True if the linked customer is an Invoice&GO customer, false
+              otherwise
+          phone_number:
+            type: string
+            description: Phone number
+          id:
+            type: integer
+            description: Unique user identifier
+          customer_id:
+            type: integer
+            description: Optional customer id linked to this user
+          vehicle_id:
+            type: integer
+            description:
+              Used to assign one specific vehicle to this user. When this is set,
+              the user can use only this vehicle in Invoice&GO
+          supplier_id:
+            type: integer
+            description: Optional supplier id linked to the customer
+          email:
+            type: string
+            description: Login email
+            format: email
+          internal_properties:
+            type: object
+            properties:
+              is_enabled:
+                type: boolean
+                description: True if user is active, false otherwise
+              father_user_id:
+                type: integer
+                description: User who created this user
+              identity_provider_id:
+                type: integer
+                description: Id assigned from the identity provider
+              user_level_id:
+                type: integer
+                description: Level of the user
+    activeInvoiceAcceptRejectInput:
+      title: active_invoice_accept_reject_invoice_input
+      type: object
+      properties:
+        to_accept:
+          type: boolean
+          description:
+            If true, the received ids will be accepted. They'll be rejected if
+            false.
+        is_details:
+          type: boolean
+          description:
+            If true, the received ids refer to invoice details. If false, they
+            refer to invoices.
+        id:
+          type: array
+          description: Unique invoice identifier list
+          items:
+            type: integer
+      description: Active invoice accept reject data input
+    base64String:
+      title: base_64_string
+      type: object
+      properties:
+        data:
+          type: string
+          description: String value
+      description: A base64 string representing a file
+    protocolInput:
+      title: protocol_input
+      type: object
+      properties:
+        protocol:
+          type: string
+          description: Protocol used in invoice creation
+        notes:
+          type: string
+          description: Optional notes
+        immediate_invoice_protocol:
+          type: string
+          description: Protocol used in <strong>immediate</strong> invoice creation
+        supplier_id:
+          type: integer
+          description: Supplier owner of the protocol
+      description: Protocol data input
+    customerOutputArray:
+      title: customer_output_array
+      type: array
+      description: Customer data array
+      items:
+        type: object
+        properties:
+          invoice_notes:
+            type: string
+            description: Invoice custom notes
+          country:
+            type: string
+            description: Company country name
+          notes:
+            type: string
+            description: Optional notes
+          vat_number:
+            maxLength: 20
+            type: string
+            description: Company vat number
+          notify_recharge:
+            type: boolean
+            description:
+              True if the system sends an email to the customer to notify a
+              recharge operation, false otherwise
+          fee:
+            type: boolean
+            description: ECommerce customer fee
+          discount_level:
+            type: integer
+            description: Customer discount level
+          house_number:
+            type: string
+            description: Company house number
+          max_period_credit:
+            type: number
+            description: Max credit
+          charge_discount:
+            type: number
+            description: Discount amount for recharging operations
+          zip_code:
+            maxLength: 6
+            minLength: 4
+            type: integer
+            description: Company headquarter zip code
+          pec:
+            maxLength: 100
+            type: string
+            description: Company pec
+            format: email
+          province:
+            maxLength: 2
+            type: string
+            description: Province code
+          has_driver_request:
+            type: boolean
+            description:
+              True if the customer has to type the driver code when performing a
+              transaction, false otherwise
+          ignore_payment_mode_on_pos:
+            type: boolean
+            description: If true ignores customer payment mode for POS recharges
+          vat_id:
+            type: integer
+            description: Customer vat
+          oil_iban:
+            type: string
+            description: If not empty, oil invoices uses this iban if needed
+          id:
+            type: integer
+            description: Unique customer identifier
+          has_driver_check:
+            type: boolean
+            description:
+              True if the system check the driver code (it has to be an
+              authorizative PIN), false otherwise
+          app_can_see_balance:
+            type: boolean
+            description:
+              True if in the Selfnet mobile app user can see the customer credit,
+              false otherwise
+          merge_invoices:
+            type: boolean
+            description:
+              If True, OIL and NON OIL invoices are merged (where possible),
+              false otherwise
+          is_without_vat:
+            type: boolean
+            description: If True, the customer has no VAT number
+          fax_number:
+            maxLength: 50
+            type: string
+            description: Company fax number
+          internal_properties:
+            type: object
+            properties:
+              card_type_id:
+                type: integer
+                description:
+                  "Only for Selfnet GT cards customers, shows the owner
+                  circuit.<br/>Possible valuesa are: <ul><li> 9 DKV</li><li>10
+                  UTA</li><li>13 EWG</li><li>39 FAI</li><li>42 EDC
+                  (RADIUS)</li></ul>"
+              registration_date:
+                type: string
+                description: Customer's registration date in the system
+                format: date-time
+              parent_id:
+                type: integer
+                description: Parent client ID reverse change management
+              associated_supplier_id:
+                type: integer
+                description: For multisupplier, linked supplier
+              is_external_customer:
+                type: boolean
+                description:
+                  True if the customer is created by API called by third parties.
+                  Only used in GET endpoints
+              is_exported:
+                type: boolean
+                description:
+                  True if the customer is created and still never exported, false
+                  otherwise
+              type:
+                type: string
+                description: "Customer type -> 'S': Society, 'P': Private"
+          residue_type:
+            type: integer
+            description: Shows on the receipt card or customer residue
+          stamp_duty:
+            type: boolean
+            description: If true invoices have stamp duty when numbers permits it
+          exposure:
+            type: number
+            description: Issued invoices still not payed
+          name:
+            maxLength: 81
+            type: string
+            description: Company complete name
+          sdi_code:
+            maxLength: 7
+            minLength: 6
+            type: string
+            description: SDI code used to receive electronic invoices
+          phone_number:
+            maxLength: 50
+            type: string
+            description: Company phone number
+          supplier_id:
+            type: integer
+            description: Supplier owner of customer data (not set for I&GO customers)
+          discount_group_id:
+            type: integer
+            description: Discount group identifier
+          country_id:
+            type: integer
+            description: Company country id
+          non_oil_iban:
+            type: string
+            description: If not empty, non oil invoices uses this iban if needed
+          birthday:
+            type: string
+            description: Customer birthday date
+            format: date-time
+          notify_2:
+            type: boolean
+            description:
+              True if the system sends an email to secondary customer email
+              address, false otherwise.<br/>If the field notify (or the field
+              notify_recharge) is set to False, this value is ignored.
+          code:
+            maxLength: 6
+            minLength: 4
+            type: string
+            description: Company code
+          notify_3:
+            type: boolean
+            description:
+              True if the system sends an email to third customer email address,
+              false otherwise.<br/>If the field notify (or the field
+              notify_recharge) is set to False, this value is ignored.
+          gender:
+            type: string
+            description: Customer gender
+          has_customer_recharge:
+            type: boolean
+            description:
+              True if the recharge operations increase the customer credit,False
+              if they increase the credit of the single involved card.
+          city:
+            maxLength: 30
+            type: string
+            description: Company headquarter city
+          notify_1:
+            type: boolean
+            description:
+              True if the system sends an email to main customer email address,
+              false otherwise.<br/>If the field notify (or the field
+              notify_recharge) is set to False, this value is ignored.
+          adm_code:
+            maxLength: 7
+            minLength: 6
+            type: string
+            description: Company sdi passive code
+          fiscal_code:
+            maxLength: 20
+            type: string
+            description: Company fiscal code
+          nexi_configuration:
+            type: string
+            description: ECommerce configuration
+          notify:
+            type: boolean
+            description:
+              True if the system sends an email to the customer to notify his
+              operations, false otherwise
+          article_id:
+            type: integer
+            description: Article id to add costs to the customer invoice
+          is_enabled:
+            type: boolean
+            description: True if customer is active, false otherwise
+          has_account_balance:
+            type: boolean
+            description:
+              True if the system generates the account balance for this customer,
+              false otherwise
+          enabled_vehicles:
+            type: array
+            description: Enabled vehicles ids, lookup for vehicle details using
+              /vehicles/{id} endpoint
+            items:
+              type: integer
+          electronic_invoice:
+            type: boolean
+            description: True if the customer use the ICAD Sistemi electronic invoice
+          start_invoice_date:
+            type: string
+            description:
+              For Selfnet customer, represents the electronic invoice starting
+              dateIf NULL, invoices start when the field electronic_invoice is
+              activated
+            format: date
+          payment_terms_id:
+            type: integer
+            description: Payment terms identifier. It is used only for Selfnet
+              customers<br/> Possible values are:<ul><li>2	5 gg data
+              fattura</li><li>3	15 gg data fattura</li><li>4	30 gg fine mese
+              data fattura</li><li>5	60 gg fine mese data fattura</li><li>6	90
+              gg fine mese data fattura</li><li>22	Data Fattura</li><li>23	25 gg
+              data fattura</li><li>26	30 gg data fattura</li><li>27	45 gg data
+              fattura</li><li>28	35 gg data fattura</li><li>29	40 gg data
+              fattura</li><li>30	60 gg fine mese + 12gg</li><li>31	30 gg fine
+              mese + 12gg</li><li>32	20 gg data fattura</li><li>33	30 gg fine
+              mese +  8gg</li><li>34	60 gg fine mese + 10gg</li><li>35	30 gg
+              fine mese +  5gg</li><li>36	30 gg fine mese + 10gg</li><li>37	60
+              gg fine mese + 15gg</li><li>38	10 gg data fattura</li><li>39	30 gg
+              fine mese + 15gg</li><li>40	60 gg fine mese +  5gg</li><li>41	60
+              gg data fattura</li><li>42	90 gg fine mese + 10gg</li><li>43	90 gg
+              data fattura</li></ul>
+          email:
+            maxLength: 100
+            type: string
+            description: Company email
+            format: email
+          address:
+            maxLength: 81
+            type: string
+            description: Company address
+          payment_mode_id:
+            type: string
+            description: "Payment mode identifier.<br/>Possible values
+              are:<ul><li><strong>MP01</strong>:
+              Contanti</li><li><strong>MP02</strong>:
+              Assegno</li><li><strong>MP03</strong>: assegno
+              circolare</li><li><strong>MP04</strong>: contanti presso
+              Tesoreria</li><li><strong>MP05</strong>:
+              Bonifico</li><li><strong>MP06</strong>: vaglia
+              cambiario</li><li><strong>MP07</strong>: bollettino
+              bancario</li><li><strong>MP08</strong>: Carta di
+              pagamento</li><li><strong>MP09</strong>:
+              RID</li><li><strong>MP10</strong>: RID
+              utenze</li><li><strong>MP11</strong>: RID
+              veloce</li><li><strong>MP12</strong>: Ricevuta
+              bancaria</li><li><strong>MP13</strong>:
+              MAV</li><li><strong>MP14</strong>: quietanza erario
+              stato</li><li><strong>MP15</strong>: giroconto su conti di
+              contabilità speciale</li><li><strong>MP16</strong>: domiciliazione
+              bancaria</li><li><strong>MP17</strong>: domiciliazione
+              postale</li><li><strong>MP18</strong>: Bollettino di c/c
+              postale</li><li><strong>MP19</strong>: SEPA Direct
+              Debit</li><li><strong>MP20</strong>: SEPA Direct Debit
+              CORE</li><li><strong>MP21</strong>: SEPA Direct Debit
+              B2B</li><li><strong>MP22</strong>: Trattenuta su somme già
+              riscosse</li><li><strong>MP23</strong>: PagoPA</li></ul>"
+          has_km_request:
+            type: boolean
+            description:
+              True if the customer has to type the km value when performing a
+              transaction, false otherwise
+          has_invoice:
+            type: boolean
+            description:
+              True if the customer needs to invoice his transactions, false
+              otherwise
+          has_km_check:
+            type: boolean
+            description:
+              True if the system check the value of the field has_km_request,
+              false otherwise
+          price_list_id:
+            type: integer
+            description: Price list identifier linked to this customer
+          payment_periodicity_id:
+            type: string
+            description: Payment periodicity identifier.<br/>Possible values
+              are:<ul><li><strong>N</strong> Immediata (both for Invoice&GO and
+              Selfnet customers)</li><li><strong>W</strong> Settimanale (only
+              for Selfnet customers)</li><li><strong>D</strong> 	Decade (only
+              for Selfnet customers)</li><li><strong>F</strong> 	Quindicinale
+              (only for Selfnet customers)</li><li><strong>M</strong> 	Mensile
+              (both for Invoice&GO and Selfnet
+              customers)</li><li><strong>B</strong> 	Bimestrale (only for
+              Selfnet customers)</li><li><strong>Q</strong> 	Trimestrale (only
+              for Selfnet customers)</li><li><strong>X</strong> 	Nessuna (only
+              for Selfnet customers)</li></ul>
+          enabled_articles:
+            type: array
+            description: Enabled articles ids, lookup for article details using
+              /articles/{id} endpoint
+            items:
+              type: integer
+          has_split_payment:
+            type: boolean
+            description: True if the customer use the split payment, false otherwise
+    residueLogOutputArray:
+      title: residue_log_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          residue_new:
+            type: number
+            description: Residue after the transfer/reset
+          datetime:
+            type: string
+            description: Timestamp of the operation
+            format: date-time
+          source_card_pan:
+            type: string
+            description: Pan of the source card in a transfer
+          target_card_code:
+            type: string
+            description: Code of the target card in a transfer
+          source_card_code:
+            type: string
+            description: Code of the source card in a transfer
+          target_card_pan:
+            type: string
+            description: Pan of the target card in a transfer
+          id:
+            type: integer
+            description: Id of the record
+          customer_name:
+            type: string
+            description: Name of the involved customer
+          last_action:
+            type: string
+            description: The operation perfomed (transfer or reset)
+          customer_code:
+            type: string
+            description: Code of the involved code
+          user:
+            type: integer
+            description: Username of the user who made the operation
+          residue_old:
+            type: number
+            description: Residue before the transfer/reset
+    productFamilyInput:
+      title: product_family_input
+      type: object
+      properties:
+        market:
+          type: boolean
+          description: If True, the family is managed by the pos. False otherwise.
+        code:
+          type: string
+          description: Product family code
+        name:
+          type: string
+          description: Product family name
+      description: Product family data input
+    invoiceBodyOutputArray:
+      title: invoice_body_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          fuel_station_id:
+            type: integer
+            description: Optional fuel station id involved
+          notes:
+            type: string
+            description: Transaction notes
+          vehicle_plate:
+            type: string
+            description: Vehicle plate
+          payments:
+            type: array
+            items:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  description: Amount payed with this payment method
+                payment_method_code:
+                  type: string
+                  description: "Payment method code<br/>Possible values
+                    are:<ul><li><strong>MP01</strong>:
+                    Contanti</li><li><strong>MP02</strong>:
+                    Assegno</li><li><strong>MP03</strong>: assegno
+                    circolare</li><li><strong>MP04</strong>: contanti presso
+                    Tesoreria</li><li><strong>MP05</strong>:
+                    Bonifico</li><li><strong>MP06</strong>: vaglia
+                    cambiario</li><li><strong>MP07</strong>: bollettino
+                    bancario</li><li><strong>MP08</strong>: Carta di
+                    pagamento</li><li><strong>MP09</strong>:
+                    RID</li><li><strong>MP10</strong>: RID
+                    utenze</li><li><strong>MP11</strong>: RID
+                    veloce</li><li><strong>MP12</strong>: Ricevuta
+                    bancaria</li><li><strong>MP13</strong>:
+                    MAV</li><li><strong>MP14</strong>: quietanza erario
+                    stato</li><li><strong>MP15</strong>: giroconto su conti di
+                    contabilità speciale</li><li><strong>MP16</strong>:
+                    domiciliazione bancaria</li><li><strong>MP17</strong>:
+                    domiciliazione postale</li><li><strong>MP18</strong>:
+                    Bollettino di c/c postale</li><li><strong>MP19</strong>:
+                    SEPA Direct Debit</li><li><strong>MP20</strong>: SEPA Direct
+                    Debit CORE</li><li><strong>MP21</strong>: SEPA Direct Debit
+                    B2B</li><li><strong>MP22</strong>: Trattenuta su somme già
+                    riscosse</li><li><strong>MP23</strong>: PagoPA</li></ul>"
+                cab:
+                  type: string
+                  description:
+                    "If the used payment method requires is (example: wire transfer),
+                    it contains the involved cab"
+                iban:
+                  type: string
+                  description:
+                    "If the used payment method requires is (example: wire transfer),
+                    it contains the involved iban"
+                abi:
+                  type: string
+                  description:
+                    "If the used payment method requires is (example: wire transfer),
+                    it contains the involved abi"
+                id:
+                  type: integer
+                  description: Unique payment data identifier
+                bic:
+                  type: string
+                  description:
+                    "If the used payment method requires is (example: wire transfer),
+                    it contains the involved bic"
+          ddt_number:
+            type: string
+            description: DDT number associated to the transaction
+          vehicle_model:
+            type: string
+            description: Vehicle model
+          article_id:
+            type: integer
+            description: Purchased article id
+          is_oil:
+            type: boolean
+            description: True if the transaction refers to OIL article, false otherwise
+          vat_amount:
+            type: number
+            description: Vat amount applied to the taxable amount
+          credit_note_detail_id:
+            type: integer
+            description:
+              Optional credit note detail id (used when this transaction is
+              reversed)
+          unit_of_measure:
+            type: string
+            description: Unit of measure used
+          invoice_id:
+            type: integer
+            description: Reference to invoice where this record is included
+          vat_id:
+            type: integer
+            description: Vat rate user for this transaction
+          id:
+            type: integer
+            description: Unique invoice detail identifier
+          decrement_total:
+            type: boolean
+            description:
+              If true, decrements transaction amount from the total. False
+              otherwise.
+          vehicle_id:
+            type: integer
+            description: Vehicle ID
+          taxable_amount:
+            type: number
+            description: Taxable amout of this transaction
+          transaction_id:
+            type: string
+            description: Transaction ID from station PC
+          km:
+            type: integer
+            description: Optional odometer value
+          quantity:
+            type: number
+            description: Quantity of the purchased article
+          article_description:
+            type: string
+            description: Name of the purchased article
+          discount_increase:
+            type: number
+            description: "0 if there is no discount on the transaction's total amount. "
+          transaction_timestamp:
+            type: string
+            description: Transaction datetime
+            format: date-time
+          unit_price:
+            type: number
+            description: Unit price of the purchased article
+          detail_status_code:
+            type: string
+            description:
+              Current status of this record. It can be SF01 (to be approved),
+              SF02 (approved) or SF12 (manually rejected)
+          card_id:
+            type: integer
+            description: Optional card involved in this transaction
+          article_code:
+            type: string
+            description: Code of the purchased article
+          receipt_number:
+            type: string
+            description: Associated ticket id
+          insert_invoice_mode_id:
+            type: integer
+            description:
+              "Identifies transaction's origin. Possibile values:<br/><ul><li>1:
+              manual insert by manager</li><li>2: manual insert by the
+              customer</li><li>3: from station PC</li><li>4: from Self, by
+              customer with ticket number</li><li>: Selfnet
+              transaction</li></ul>"
+          total_amount:
+            type: number
+            description: Total gros amount of this transaction
+          user_id:
+            type: integer
+            description: Id of the user who created this transaction in the invoice
+          image_data:
+            type: string
+            description: Optional attached receipt image
+          fuel_station_address:
+            type: string
+            description: Address of the involved fuel station (if present)
+    paymentModeOutputArray:
+      title: payment_mode_output_array
+      type: array
+      items:
+        type: object
+        properties:
+          use:
+            type: string
+            description: Payment mode name
+          name:
+            type: string
+            description: Payment mode name
+          sdi_code:
+            type: string
+            description:
+              "Code used by SDI to idenfy this payment mode.<br/>Possible values
+              are:<ul><li><strong>MP01</strong>:
+              Contanti</li><li><strong>MP02</strong>:
+              Assegno</li><li><strong>MP03</strong>: assegno
+              circolare</li><li><strong>MP04</strong>: contanti presso
+              Tesoreria</li><li><strong>MP05</strong>:
+              Bonifico</li><li><strong>MP06</strong>: vaglia
+              cambiario</li><li><strong>MP07</strong>: bollettino
+              bancario</li><li><strong>MP08</strong>: Carta di
+              pagamento</li><li><strong>MP09</strong>:
+              RID</li><li><strong>MP10</strong>: RID
+              utenze</li><li><strong>MP11</strong>: RID
+              veloce</li><li><strong>MP12</strong>: Ricevuta
+              bancaria</li><li><strong>MP13</strong>:
+              MAV</li><li><strong>MP14</strong>: quietanza erario
+              stato</li><li><strong>MP15</strong>: giroconto su conti di
+              contabilità speciale</li><li><strong>MP16</strong>: domiciliazione
+              bancaria</li><li><strong>MP17</strong>: domiciliazione
+              postale</li><li><strong>MP18</strong>: Bollettino di c/c
+              postale</li><li><strong>MP19</strong>: SEPA Direct
+              Debit</li><li><strong>MP20</strong>: SEPA Direct Debit
+              CORE</li><li><strong>MP21</strong>: SEPA Direct Debit
+              B2B</li><li><strong>MP22</strong>: Trattenuta su somme già
+              riscosse</li><li><strong>MP23</strong>: PagoPA</li></ul>"
+          needs_bank_coordinates:
+            type: string
+            description: Payment mode name
+          id:
+            type: integer
+            description: Unique payment mode identifier
+  securitySchemes:
+    devicadapimainstackusersAuthorizerEA9C3B95:
+      type: apiKey
+      name: Authorization
+      in: header
+      x-amazon-apigateway-authtype: cognito_user_pools
+x-amazon-apigateway-policy:
+  Version: 2012-10-17
+  Statement:
+    - Effect: Allow
+      Principal:
+        AWS: "*"
+      Action: execute-api:Invoke
+      Resource: arn:aws:execute-api:eu-south-1:222943138707:4p0h06bdb8/*/*/*
