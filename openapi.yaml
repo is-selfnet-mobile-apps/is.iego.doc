@@ -302,6 +302,30 @@ paths:
           content: {}
       security:
         - devicadapimainstackusersAuthorizerEA9C3B95: []
+  /v1/users/promote:
+    post:
+      tags:
+        - User
+      summary: Promote user on db
+      description: Promote user on db
+      responses:
+        "202":
+          description: User successfully promoted
+          content: {}
+        "400":
+          description: 400 response
+          content: {}
+        "401":
+          description: 401 response
+          content: {}
+        "403":
+          description: 403 response
+          content: {}
+        "500":
+          description: 500 response
+          content: {}
+      security:
+        - devicadapimainstackusersAuthorizerEA9C3B95: []
   /v1/invoices/active/{id}/details:
     get:
       tags:
@@ -1466,44 +1490,6 @@ paths:
           content: {}
         "403":
           description: 403 response
-          content: {}
-        "500":
-          description: 500 response
-          content: {}
-      security:
-        - devicadapimainstackusersAuthorizerEA9C3B95: []
-  /v1/users/{id}/fuelstations:
-    get:
-      tags:
-        - Fuel Station
-      summary: Retrieve fuel stations
-      description:
-        <h4>Not available for customer users. Available only if the user is
-        a manager or has an higher level.</h4>Retrieve user fuel stations
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: Retrieved fuel stations
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/fuelStationOutputArray"
-        "400":
-          description: 400 response
-          content: {}
-        "401":
-          description: 401 response
-          content: {}
-        "403":
-          description: 403 response
-          content: {}
-        "404":
-          description: 404 response
           content: {}
         "500":
           description: 500 response
