@@ -1,9 +1,10 @@
 openapi: 3.0.1
 info:
-  title: mxp-dev-icadsistemi-apigw
-  version: 2022-05-10T14:04:42Z
+  title: Invoice&Go APP Public API
+  version: 1.0.0
 servers:
-  - url: https://mxp-dev-apigw-public.icadsistemi.com
+  - url: https://mxp-public-iego-api.dev.icadsistemi.com
+    description: Development environment
 paths:
   /v1/users/{id}:
     get:
@@ -149,20 +150,8 @@ paths:
         - devicadapimainstackusersAuthorizerEA9C3B95: []
   /v1/versions/{application}:
     get:
-      parameters:
-        - name: application
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        "200":
-          description: 200 response
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Empty"
-    post:
+      tags:
+        - Version
       parameters:
         - name: application
           in: path
