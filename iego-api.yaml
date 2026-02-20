@@ -3544,6 +3544,8 @@ components:
           type: string
         has_computer_station_connection:
           type: boolean
+        read_qr:
+          type: boolean
     fuelStationOutputArray:
       title: fuel_station_output_array
       type: array
